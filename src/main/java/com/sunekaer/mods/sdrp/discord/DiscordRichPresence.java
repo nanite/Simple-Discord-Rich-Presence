@@ -6,15 +6,12 @@ import com.sunekaer.mods.sdrp.discord.discordipc.IPCClient;
 import com.sunekaer.mods.sdrp.discord.discordipc.entities.RichPresence;
 import com.sunekaer.mods.sdrp.discord.discordipc.exceptions.NoDiscordClientException;
 import net.minecraft.world.dimension.Dimension;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-@OnlyIn(Dist.CLIENT)
 public class DiscordRichPresence {
 
     private static final OffsetDateTime TIME = OffsetDateTime.now();
