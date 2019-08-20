@@ -58,7 +58,13 @@ public class DiscordRichPresence {
     }
 
     public static void setDimension(Dimension dimension) {
-        setState(map.get(dimension.getType().getRegistryName().toString()));
+        State dim = map.get(dimension.getType().getRegistryName().toString());
+        if (dim != null) {
+            setState(dim);
+        } else if (dim == null){
+            State dim2 = new State("In " + dimension.getType().getRegistryName().toString(),  dimension.getType().getRegistryName().toString(), "overworld");
+            setState(dim2);
+        }
     }
 
     public static void setState(State state) {
@@ -68,6 +74,8 @@ public class DiscordRichPresence {
         builder.setState(state.message);
         builder.setStartTimestamp(TIME);
         builder.setLargeImage("logo", "Pack Logo");
+        System.out.println(state.imageKey);
+        System.out.println(state.imageName);
         builder.setSmallImage(state.imageKey, state.imageName);
         try {
             CLIENT.sendRichPresence(builder.build());
