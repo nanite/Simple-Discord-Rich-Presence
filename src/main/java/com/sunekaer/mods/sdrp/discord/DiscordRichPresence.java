@@ -70,12 +70,10 @@ public class DiscordRichPresence {
     public static void setState(State state) {
         currentState = state;
         RichPresence.Builder builder = new RichPresence.Builder();
-        //builder.setDetails("tbd");
+//        builder.setDetails();
         builder.setState(state.message);
         builder.setStartTimestamp(TIME);
         builder.setLargeImage("logo", "Pack Logo");
-        System.out.println(state.imageKey);
-        System.out.println(state.imageName);
         builder.setSmallImage(state.imageKey, state.imageName);
         try {
             CLIENT.sendRichPresence(builder.build());

@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.0.2'
+version = '1.0.3'
 group = 'com.sunekaer.mods'
 archivesBaseName = 'SimpleDiscordRichPresence'
 
@@ -58,7 +58,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.14.4-28.0.45'
+    minecraft 'net.minecraftforge:forge:1.14.4-28.1.90'
 }
 
 jar {
