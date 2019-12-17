@@ -32,6 +32,7 @@ public class SDRP {
             MinecraftForge.EVENT_BUS.addListener(this::initGui);
             MinecraftForge.EVENT_BUS.addListener(this::entityJoinWorld);
         });
+        DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> () -> LOGGER.warn("This is a client only mod!"));
     }
 
     private void setup(FMLCommonSetupEvent event) {
