@@ -1,18 +1,27 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url "https://plugins.gradle.org/m2/" }
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.1.0'
+        classpath 'com.wynprice.cursemaven:CurseMaven:1.2.+'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
+apply plugin: 'com.matthewprenger.cursegradle'
+apply plugin: 'maven'
+apply plugin: 'com.wynprice.cursemaven'
 
-version = '1.2.0'
+apply from: 'https://raw.githubusercontent.com/MinecraftModDevelopment/Gradle-Collection/master/generic/markdown-git-changelog.gradle'
+
+
+def ENV = System.getenv()
+version = ENV.BUILD_NUMBER ? "${project_version}.${ENV.BUILD_NUMBER}" : "${project_version}.custom"
 group = 'com.sunekaer.mods'
 archivesBaseName = 'SimpleDiscordRichPresence'
 
@@ -57,8 +66,14 @@ minecraft {
     }
 }
 
+repositories {
+    mavenLocal()
+    maven { url "https://maven.latmod.com/" }
+    maven { url "https://dvs1.progwml6.com/files/maven/"}
+}
+
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.1-30.0.16'
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 }
 
 jar {
@@ -80,15 +95,39 @@ def reobfArtifact = artifacts.add('default', reobfFile) {
     type 'jar'
     builtBy 'reobfJar'
 }
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact reobfArtifact
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier 'deobf'
+}
+
+build.dependsOn deobfJar
+
+artifacts {
+    archives deobfJar
+}
+
+if (ENV.LOCAL_MAVEN) {
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: "file://${ENV.LOCAL_MAVEN}")
+            }
         }
     }
-    repositories {
-        maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
+}
+
+if (ENV.WTBW_CF_KEY) {
+    curseforge {
+        apiKey = ENV.WTBW_CF_KEY
+        project {
+            id = "334853"
+            releaseType = "release"
+            addGameVersion "1.15.1"
+            addGameVersion "Forge"
+            changelog = getGitChangelog
+            changelogType = 'markdown'
+            addArtifact(deobfJar)
         }
     }
 }
