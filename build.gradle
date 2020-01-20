@@ -28,7 +28,7 @@ archivesBaseName = 'SimpleDiscordRichPresence'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20190720-1.14.3'
+    mappings channel: 'snapshot', version: '20200120-1.15.1'
     //accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
