@@ -12,15 +12,15 @@ description='''
 Simple Discord Rich Presence
 '''
 [[dependencies.sdrp]] #optional
-    modId="forge" 
-    mandatory=true 
-    versionRange="[30.0.7,)"
+    modId="forge"
+    mandatory=true
+    versionRange="[31.0.0,)"
     ordering="NONE"
     side="BOTH"
 # Here's another dependency
 [[dependencies.sdrp]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.1]"
+    versionRange="[1.15.2]"
     ordering="NONE"
     side="BOTH"

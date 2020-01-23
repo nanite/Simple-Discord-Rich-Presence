@@ -28,7 +28,7 @@ archivesBaseName = 'SimpleDiscordRichPresence'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200120-1.15.1'
+    mappings channel: 'snapshot', version: "${mcp_mappings}"
     //accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
@@ -123,7 +123,7 @@ if (ENV.WTBW_CF_KEY) {
         project {
             id = "334853"
             releaseType = "release"
-            addGameVersion "1.15.1"
+            addGameVersion "1.15.2"
             addGameVersion "Forge"
             changelog = getGitChangelog
             changelogType = 'markdown'
