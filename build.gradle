@@ -124,7 +124,6 @@ if (ENV.WTBW_CF_KEY) {
             id = "334853"
             releaseType = "release"
             addGameVersion "1.15.2"
-            addGameVersion "Forge"
             changelog = getGitChangelog
             changelogType = 'markdown'
             addArtifact(deobfJar)
