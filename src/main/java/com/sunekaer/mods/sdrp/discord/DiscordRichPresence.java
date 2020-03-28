@@ -5,6 +5,7 @@ import com.sunekaer.mods.sdrp.config.Config;
 import com.sunekaer.mods.sdrp.discord.discordipc.IPCClient;
 import com.sunekaer.mods.sdrp.discord.discordipc.entities.RichPresence;
 import com.sunekaer.mods.sdrp.discord.discordipc.exceptions.NoDiscordClientException;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.dimension.Dimension;
 
 import java.time.OffsetDateTime;
@@ -62,7 +63,13 @@ public class DiscordRichPresence {
         if (dim != null) {
             setState(dim);
         } else if (dim == null){
-            State dim2 = new State("In " + dimension.getType().getRegistryName().toString(),  dimension.getType().getRegistryName().toString(), "overworld");
+            String name = new TranslationTextComponent("sdrp." + dimension.getType().getRegistryName().getPath()).getFormattedText();
+            String in = new TranslationTextComponent("sdrp." + dimension.getType().getRegistryName().getPath() + ".in").getFormattedText();
+            String key = dimension.getType().getRegistryName().getPath();
+
+            System.out.println(key);
+
+            State dim2 = new State(in,  name, key);
             setState(dim2);
         }
     }
@@ -123,9 +130,9 @@ public class DiscordRichPresence {
     static {
         map.put("loading", new State("Starting Minecraft", "Starting Minecraft", "loading"));
         map.put("menu", new State("Main Menu", "Main Menu", "menu"));
-        map.put("minecraft:overworld", new State("In The Overworld", "Overworld", "overworld"));
-        map.put("minecraft:the_nether", new State("In The Nether", "Nether", "nether"));
-        map.put("minecraft:the_end", new State("In The End", "The End", "end"));
-        map.put("yamda:mining_dim", new State("In YAMDA Mining Dim", "Mining Dim", "yamda"));
+//        map.put("minecraft:overworld", new State("In The Overworld", "Overworld", "overworld"));
+//        map.put("minecraft:the_nether", new State("In The Nether", "Nether", "nether"));
+//        map.put("minecraft:the_end", new State("In The End", "The End", "end"));
+//        map.put("yamda:mining_dim", new State("In YAMDA Mining Dim", "Mining Dim", "yamda"));
     }
 }
