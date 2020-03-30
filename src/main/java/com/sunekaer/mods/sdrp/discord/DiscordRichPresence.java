@@ -80,7 +80,8 @@ public class DiscordRichPresence {
 //        builder.setDetails();
         builder.setState(state.message);
         builder.setStartTimestamp(TIME);
-        builder.setLargeImage("logo", "Pack Logo");
+        String name = new TranslationTextComponent("sdrp.logo").getFormattedText();
+        builder.setLargeImage("logo", name);
         builder.setSmallImage(state.imageKey, state.imageName);
         try {
             CLIENT.sendRichPresence(builder.build());
