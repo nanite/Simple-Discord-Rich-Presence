@@ -1,5 +1,5 @@
 modLoader="javafml" 
-loaderVersion="[30,)"
+loaderVersion="[32,)"
 issueTrackerURL="https://github.com/Sunekaer/Simple-Discord-Rich-Presence/issues"
 [[mods]] 
 modId="sdrp" 
@@ -14,13 +14,13 @@ Simple Discord Rich Presence
 [[dependencies.sdrp]] #optional
     modId="forge"
     mandatory=true
-    versionRange="[31.0.0,)"
+    versionRange="[32.0.0,)"
     ordering="NONE"
     side="BOTH"
 # Here's another dependency
 [[dependencies.sdrp]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.2]"
+    versionRange="[1.16.1]"
     ordering="NONE"
     side="BOTH"

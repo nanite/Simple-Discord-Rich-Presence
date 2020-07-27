@@ -5,8 +5,12 @@ import com.sunekaer.mods.sdrp.config.Config;
 import com.sunekaer.mods.sdrp.discord.discordipc.IPCClient;
 import com.sunekaer.mods.sdrp.discord.discordipc.entities.RichPresence;
 import com.sunekaer.mods.sdrp.discord.discordipc.exceptions.NoDiscordClientException;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.dimension.Dimension;
+import net.minecraft.world.Dimension;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
+
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -58,16 +62,14 @@ public class DiscordRichPresence {
         SDRP.LOGGER.info("Discord client closed.");
     }
 
-    public static void setDimension(Dimension dimension) {
-        State dim = map.get(dimension.getType().getRegistryName().toString());
+    public static void setDimension(World world) {
+        State dim = map.get(world.func_234923_W_().func_240901_a_().toString());
         if (dim != null) {
             setState(dim);
         } else if (dim == null){
-            String name = new TranslationTextComponent("sdrp." + dimension.getType().getRegistryName().getPath()).getFormattedText();
-            String in = new TranslationTextComponent("sdrp." + dimension.getType().getRegistryName().getPath() + ".in").getFormattedText();
-            String key = dimension.getType().getRegistryName().getPath();
-
-            System.out.println(key);
+            String name = I18n.format("sdrp." + world.func_234923_W_().func_240901_a_().getPath());
+            String in = I18n.format("sdrp." + world.func_234923_W_().func_240901_a_().getPath() + ".in");
+            String key = world.func_234923_W_().func_240901_a_().getPath();
 
             State dim2 = new State(in,  name, key);
             setState(dim2);
@@ -80,7 +82,8 @@ public class DiscordRichPresence {
 //        builder.setDetails();
         builder.setState(state.message);
         builder.setStartTimestamp(TIME);
-        String name = new TranslationTextComponent("sdrp.logo").getFormattedText();
+//        String name = new TranslationTextComponent("sdrp.logo").getFormattedText();
+        String name = I18n.format("sdrp.logo");
         builder.setLargeImage("logo", name);
         builder.setSmallImage(state.imageKey, state.imageName);
         try {
