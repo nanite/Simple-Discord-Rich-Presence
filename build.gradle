@@ -155,7 +155,7 @@ if (ENV.CURSE_DEPLOY) {
             addGameVersion "Java 8"
             changelog = getGitChangelog
             changelogType = 'markdown'
-            addArtifact(deobfJar)
+            addArtifact(jar)
         }
     }
 }
