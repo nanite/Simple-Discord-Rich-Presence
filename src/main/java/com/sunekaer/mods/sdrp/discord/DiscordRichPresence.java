@@ -1,75 +1,73 @@
 package com.sunekaer.mods.sdrp.discord;
 
-import com.sunekaer.mods.sdrp.SDRP;
 import com.sunekaer.mods.sdrp.config.Config;
 import com.sunekaer.mods.sdrp.discord.discordipc.IPCClient;
 import com.sunekaer.mods.sdrp.discord.discordipc.entities.RichPresence;
 import com.sunekaer.mods.sdrp.discord.discordipc.exceptions.NoDiscordClientException;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.Dimension;
-import net.minecraft.world.DimensionType;
+import net.minecraft.util.Util;
 import net.minecraft.world.World;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class DiscordRichPresence {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final OffsetDateTime TIME = OffsetDateTime.now();
-    private static final Timer TIMER = new Timer("DiscordRP Timer");
     private static State currentState;
     private static final IPCClient CLIENT = new IPCClient(Config.CONFIG.clientID.get());
     private static boolean isEnabled = false;
     private static int errorCount = 0;
-    private static TimerTask timerTask;
+    private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor();
+
+    private static final Runnable TIMER_TASK = () -> {
+        if (currentState != null && CLIENT.getStatus() == IPCClient.Status.CONNECTED) {
+            setState(currentState);
+        }
+    };
 
     static {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> stop(), "DiscordRP Stop"));
+        Runtime.getRuntime().addShutdownHook(new Thread(DiscordRichPresence::stop, "DiscordRP Stop"));
     }
 
     public static void start() {
-        try {
-            CLIENT.connect();
-            TIMER.schedule(timerTask = new TimerTask() {
-
-                @Override
-                public void run() {
-                    setState(currentState);
-                }
-            }, 1000, 1000 * 120);
-            isEnabled = true;
-            SDRP.LOGGER.info("Discord client found and connected.");
-        } catch (NoDiscordClientException ex) {
-            SDRP.LOGGER.info("Discord client was not found.");
-        }
+        Util.backgroundExecutor().execute(() -> {
+            try {
+                CLIENT.connect();
+                EXECUTOR_SERVICE.scheduleAtFixedRate(TIMER_TASK, 1000, 1000 * 120, TimeUnit.MILLISECONDS);
+                isEnabled = true;
+                LOGGER.info("Discord client found and connected.");
+            } catch (NoDiscordClientException ex) {
+                LOGGER.info("Discord client was not found.");
+            }
+        });
     }
 
     public static void stop() {
-        if (timerTask != null) {
-            timerTask.cancel();
-            timerTask = null;
-        }
         try {
             CLIENT.close();
         } catch (Exception ex) {
+            LOGGER.error("Error closing Discord connection.", ex);
         }
         errorCount = 0;
         isEnabled = false;
-        SDRP.LOGGER.info("Discord client closed.");
+        LOGGER.info("Discord client closed.");
     }
 
     public static void setDimension(World world) {
-        State dim = map.get(world.func_234923_W_().func_240901_a_().toString());
+        State dim = map.get(world.dimension().location().toString());
         if (dim != null) {
             setState(dim);
         } else if (dim == null){
-            String name = I18n.format("sdrp." + world.func_234923_W_().func_240901_a_().getPath());
-            String in = I18n.format("sdrp." + world.func_234923_W_().func_240901_a_().getPath() + ".in");
-            String key = world.func_234923_W_().func_240901_a_().getPath();
+            String name = I18n.get("sdrp." + world.dimension().location().getPath());
+            String in = I18n.get("sdrp." + world.dimension().location().getPath() + ".in");
+            String key = world.dimension().location().getPath();
 
             State dim2 = new State(in,  name, key);
             setState(dim2);
@@ -77,35 +75,41 @@ public class DiscordRichPresence {
     }
 
     public static void setState(State state) {
-        currentState = state;
-        RichPresence.Builder builder = new RichPresence.Builder();
-//        builder.setDetails();
-        builder.setState(state.message);
-        builder.setStartTimestamp(TIME);
-//        String name = new TranslationTextComponent("sdrp.logo").getFormattedText();
-        String name = I18n.format("sdrp.logo");
-        builder.setLargeImage("logo", name);
-        builder.setSmallImage(state.imageKey, state.imageName);
-        try {
-            CLIENT.sendRichPresence(builder.build());
-        } catch (Exception ex) {
-            SDRP.LOGGER.error(ex);
+        if (state == null) {
+            return;
+        }
+
+        Util.backgroundExecutor().execute(() -> {
+            currentState = state;
+            RichPresence.Builder builder = new RichPresence.Builder();
+    //        builder.setDetails();
+            builder.setState(state.message);
+            builder.setStartTimestamp(TIME);
+    //        String name = new TranslationTextComponent("sdrp.logo").getFormattedText();
+            String name = I18n.get("sdrp.logo");
+            builder.setLargeImage("logo", name);
+            builder.setSmallImage(state.imageKey, state.imageName);
             try {
-                CLIENT.connect();
-                errorCount = 0;
                 CLIENT.sendRichPresence(builder.build());
-            } catch (Exception ex2) {
+            } catch (Exception ex) {
+                LOGGER.error(ex);
                 try {
-                    CLIENT.close();
-                } catch (Exception ex3) {
-                }
-                errorCount++;
-                if (errorCount > 10) {
-                    SDRP.LOGGER.info("DiscordRP connection failed.");
-                    stop();
+                    CLIENT.connect();
+                    errorCount = 0;
+                    CLIENT.sendRichPresence(builder.build());
+                } catch (Exception ex2) {
+                    try {
+                        CLIENT.close();
+                    } catch (Exception ex3) {
+                    }
+                    errorCount++;
+                    if (errorCount > 10) {
+                        LOGGER.info("DiscordRP connection failed.");
+                        stop();
+                    }
                 }
             }
-        }
+        });
     }
 
     public static boolean isEnabled() {

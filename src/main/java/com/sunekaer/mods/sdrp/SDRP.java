@@ -69,12 +69,9 @@ public class SDRP {
         }
         if (event.getEntity() instanceof ClientPlayerEntity) {
             final ClientPlayerEntity player = (ClientPlayerEntity) event.getEntity();
-            if (player.getUniqueID().equals(Minecraft.getInstance().player.getUniqueID())) {
-                DiscordRichPresence.setDimension(player.getEntityWorld());
+            if (player.getUUID().equals(Minecraft.getInstance().player.getUUID())) {
+                DiscordRichPresence.setDimension(player.level);
             }
         }
     }
-
-
-
 }
