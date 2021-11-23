@@ -41,14 +41,6 @@ public class SDRP {
 
     private void setup(FMLCommonSetupEvent event) {
         DiscordRichPresence.start();
-
-        if (!DiscordRichPresence.isEnabled()) {
-            return;
-        }
-        final DiscordRichPresence.State state = DiscordRichPresence.getCurrent();
-        if (state == null || state != DiscordRichPresence.map.get("loading")) {
-            DiscordRichPresence.setState(DiscordRichPresence.map.get("loading"));
-        }
     }
 
     private void initGui(InitGuiEvent.Pre event) {

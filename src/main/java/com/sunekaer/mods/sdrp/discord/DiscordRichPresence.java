@@ -33,7 +33,15 @@ public class DiscordRichPresence {
     };
 
     static {
-        Runtime.getRuntime().addShutdownHook(new Thread(DiscordRichPresence::stop, "DiscordRP Stop"));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            LOGGER.info("Shutting down Discord Rich Presence client");
+            stop();
+            try {
+                EXECUTOR_SERVICE.shutdown();
+            } catch (RuntimeException error) {
+                LOGGER.error("Error shutting down Discord Rich Presence timer", error);
+            }
+        }, "DiscordRP Stop"));
     }
 
     public static void start() {
@@ -42,6 +50,12 @@ public class DiscordRichPresence {
                 CLIENT.connect();
                 EXECUTOR_SERVICE.scheduleAtFixedRate(TIMER_TASK, 1000, 1000 * 120, TimeUnit.MILLISECONDS);
                 isEnabled = true;
+
+                final State state = DiscordRichPresence.getCurrent();
+                if (state == null || state != map.get("loading")) {
+                    setState(DiscordRichPresence.map.get("loading"));
+                }
+
                 LOGGER.info("Discord client found and connected.");
             } catch (NoDiscordClientException ex) {
                 LOGGER.info("Discord client was not found.");
