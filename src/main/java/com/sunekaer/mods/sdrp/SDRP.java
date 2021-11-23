@@ -12,11 +12,14 @@ import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.FMLNetworkConstants;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,24 +29,18 @@ public class SDRP {
     public static final Logger LOGGER = LogManager.getLogger("Simple Discord Rich Presence");
 
     public SDRP() {
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.configSpec);
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
             MinecraftForge.EVENT_BUS.addListener(this::initGui);
             MinecraftForge.EVENT_BUS.addListener(this::entityJoinWorld);
         });
+        DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> () -> LOGGER.warn("This is a client only mod!"));
     }
 
     private void setup(FMLCommonSetupEvent event) {
         DiscordRichPresence.start();
-
-        if (!DiscordRichPresence.isEnabled()) {
-            return;
-        }
-        final DiscordRichPresence.State state = DiscordRichPresence.getCurrent();
-        if (state == null || state != DiscordRichPresence.map.get("loading")) {
-            DiscordRichPresence.setState(DiscordRichPresence.map.get("loading"));
-        }
     }
 
     private void initGui(InitGuiEvent.Pre event) {
@@ -64,12 +61,9 @@ public class SDRP {
         }
         if (event.getEntity() instanceof ClientPlayerEntity) {
             final ClientPlayerEntity player = (ClientPlayerEntity) event.getEntity();
-            if (player.getUniqueID().equals(Minecraft.getInstance().player.getUniqueID())) {
-                DiscordRichPresence.setDimension(player.getEntityWorld().dimension);
+            if (player.getUUID().equals(Minecraft.getInstance().player.getUUID())) {
+                DiscordRichPresence.setDimension(player.level);
             }
         }
     }
-
-
-
 }
