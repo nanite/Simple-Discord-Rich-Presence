@@ -152,11 +152,10 @@ if (ENV.CURSE_DEPLOY) {
             id = "334853"
             releaseType = "release"
             addGameVersion "1.16.5"
-            addGameVersion "Forge"
             addGameVersion "Java 8"
             changelog = getGitChangelog
             changelogType = 'markdown'
-            addArtifact(deobfJar)
+            addArtifact(jar)
         }
     }
 }
