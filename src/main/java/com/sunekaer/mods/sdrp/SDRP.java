@@ -1,25 +1,30 @@
 package com.sunekaer.mods.sdrp;
 
+import com.mojang.realmsclient.RealmsMainScreen;
 import com.sunekaer.mods.sdrp.config.Config;
 import com.sunekaer.mods.sdrp.discord.DiscordRichPresence;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.screen.MainMenuScreen;
-import net.minecraft.client.gui.screen.MultiplayerScreen;
-import net.minecraft.client.gui.screen.WorldSelectionScreen;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
+import net.minecraft.client.gui.screens.worldselection.SelectWorldScreen;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.realms.RealmsScreen;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
+import net.minecraftforge.client.event.ClientPlayerChangeGameTypeEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.FMLNetworkConstants;
-import org.apache.commons.lang3.tuple.Pair;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,7 +34,6 @@ public class SDRP {
     public static final Logger LOGGER = LogManager.getLogger("Simple Discord Rich Presence");
 
     public SDRP() {
-        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.configSpec);
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -43,11 +47,12 @@ public class SDRP {
         DiscordRichPresence.start();
     }
 
-    private void initGui(InitGuiEvent.Pre event) {
+    private void initGui(ScreenEvent.InitScreenEvent event) {
         if (!DiscordRichPresence.isEnabled()) {
             return;
         }
-        if (event.getGui() instanceof MainMenuScreen || event.getGui() instanceof WorldSelectionScreen || event.getGui() instanceof MultiplayerScreen) {
+
+        if (event.getScreen() instanceof TitleScreen || event.getScreen() instanceof JoinMultiplayerScreen || event.getScreen() instanceof SelectWorldScreen || event.getScreen() instanceof RealmsMainScreen) {
             final DiscordRichPresence.State state = DiscordRichPresence.getCurrent();
             if (state != DiscordRichPresence.map.get("menu")) {
                 DiscordRichPresence.setState(DiscordRichPresence.map.get("menu"));
@@ -56,13 +61,13 @@ public class SDRP {
     }
 
     private void entityJoinWorld(EntityJoinWorldEvent event) {
-        if (!DiscordRichPresence.isEnabled()) {
+      if (!DiscordRichPresence.isEnabled()) {
             return;
         }
-        if (event.getEntity() instanceof ClientPlayerEntity) {
-            final ClientPlayerEntity player = (ClientPlayerEntity) event.getEntity();
-            if (player.getUUID().equals(Minecraft.getInstance().player.getUUID())) {
-                DiscordRichPresence.setDimension(player.level);
+        if (event.getEntity() instanceof AbstractClientPlayer){
+            //assert Minecraft.getInstance().player != null;
+            if (event.getEntity().getUUID().equals(Minecraft.getInstance().player.getUUID())){
+                DiscordRichPresence.setDimension(event.getEntity().getLevel());
             }
         }
     }

@@ -4,9 +4,11 @@ import com.sunekaer.mods.sdrp.config.Config;
 import com.sunekaer.mods.sdrp.discord.discordipc.IPCClient;
 import com.sunekaer.mods.sdrp.discord.discordipc.entities.RichPresence;
 import com.sunekaer.mods.sdrp.discord.discordipc.exceptions.NoDiscordClientException;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.Util;
-import net.minecraft.world.World;
+
+import net.minecraft.Util;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -74,14 +76,14 @@ public class DiscordRichPresence {
         LOGGER.info("Discord client closed.");
     }
 
-    public static void setDimension(World world) {
-        State dim = map.get(world.dimension().location().toString());
+    public static void setDimension(Level level) {
+        State dim = map.get(level.dimension().toString());
         if (dim != null) {
             setState(dim);
-        } else if (dim == null){
-            String name = I18n.get("sdrp." + world.dimension().location().getPath());
-            String in = I18n.get("sdrp." + world.dimension().location().getPath() + ".in");
-            String key = world.dimension().location().getPath();
+        } else {
+            String name = I18n.get("sdrp." + level.dimension().location().getPath());
+            String in = I18n.get("sdrp." + level.dimension().location().getPath() + ".in");
+            String key = level.dimension().location().getPath();
 
             State dim2 = new State(in,  name, key);
             setState(dim2);
@@ -152,9 +154,5 @@ public class DiscordRichPresence {
     static {
         map.put("loading", new State("Starting Minecraft", "Starting Minecraft", "loading"));
         map.put("menu", new State("Main Menu", "Main Menu", "menu"));
-//        map.put("minecraft:overworld", new State("In The Overworld", "Overworld", "overworld"));
-//        map.put("minecraft:the_nether", new State("In The Nether", "Nether", "nether"));
-//        map.put("minecraft:the_end", new State("In The End", "The End", "end"));
-//        map.put("yamda:mining_dim", new State("In YAMDA Mining Dim", "Mining Dim", "yamda"));
     }
 }

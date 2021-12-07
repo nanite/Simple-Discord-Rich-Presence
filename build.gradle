@@ -27,7 +27,7 @@ version = "${project_version}-build.${ENV.GITHUB_RUN_NUMBER ?: 9999}+mc${minecra
 group = 'com.sunekaer.mods'
 archivesBaseName = 'SimpleDiscordRichPresence'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
     mappings channel: 'official', version: "${minecraft_version}"
@@ -54,17 +54,6 @@ minecraft {
                 }
             }
         }
-//        data {
-//            workingDirectory project.file('run')
-//            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-//            property 'forge.logging.console.level', 'debug'
-//            args '--mod', 'sdrp', '--all', '--output', file('src/generated/resources/')
-//            mods {
-//                sdrp {
-//                    source sourceSets.main
-//                }
-//            }
-//        }
     }
 }
 
@@ -151,11 +140,11 @@ if (ENV.CURSE_DEPLOY) {
         project {
             id = "334853"
             releaseType = "release"
-            addGameVersion "1.16.5"
-            addGameVersion "Java 8"
+            addGameVersion "Forge"
+            addGameVersion "${minecraft_version}"
+            mainArtifact(jar)
             changelog = getGitChangelog
             changelogType = 'markdown'
-            addArtifact(jar)
         }
     }
 }
