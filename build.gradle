@@ -140,7 +140,6 @@ if (ENV.CURSE_DEPLOY) {
         project {
             id = "334853"
             releaseType = "release"
-            addGameVersion "Forge"
             addGameVersion "${minecraft_version}"
             mainArtifact(jar)
             changelog = getGitChangelog
