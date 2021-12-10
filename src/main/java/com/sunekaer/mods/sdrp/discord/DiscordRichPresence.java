@@ -7,7 +7,6 @@ import com.sunekaer.mods.sdrp.discord.discordipc.exceptions.NoDiscordClientExcep
 
 import net.minecraft.Util;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -98,10 +97,9 @@ public class DiscordRichPresence {
         Util.backgroundExecutor().execute(() -> {
             currentState = state;
             RichPresence.Builder builder = new RichPresence.Builder();
-    //        builder.setDetails();
+
             builder.setState(state.message);
             builder.setStartTimestamp(TIME);
-    //        String name = new TranslationTextComponent("sdrp.logo").getFormattedText();
             String name = I18n.get("sdrp.logo");
             builder.setLargeImage("logo", name);
             builder.setSmallImage(state.imageKey, state.imageName);
