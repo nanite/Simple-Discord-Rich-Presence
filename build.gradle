@@ -60,11 +60,12 @@ minecraft {
 repositories {
     mavenLocal()
     maven { url "https://maven.latmod.com/" }
-    maven { url "https://dvs1.progwml6.com/files/maven/"}
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation 'com.github.JnCrMx:discord-game-sdk4j:0.5.5'
 }
 
 jar {
@@ -141,6 +142,7 @@ if (ENV.CURSE_DEPLOY) {
             id = "334853"
             releaseType = "release"
             addGameVersion "${minecraft_version}"
+            addGameVersion "Forge"
             mainArtifact(jar)
             changelog = getGitChangelog
             changelogType = 'markdown'
