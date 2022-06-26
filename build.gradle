@@ -1,151 +1,52 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        maven { url "https://plugins.gradle.org/m2/" }
-        mavenCentral()
+plugins {
+    id "architectury-plugin" version "3.4-SNAPSHOT"
+    id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
+    id "com.matthewprenger.cursegradle" version "1.4.0" apply false
+}
+
+architectury {
+    minecraft = rootProject.minecraft_version
+}
+
+subprojects {
+    apply plugin: "dev.architectury.loom"
+
+    loom {
+        silentMojangMappingsLicense()
     }
+
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.+'
-        classpath 'com.wynprice.cursemaven:CurseMaven:1.+'
+        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+        // The following line declares the mojmap mappings, you may use other mappings as well
+        mappings loom.officialMojangMappings()
+        // The following line declares the yarn mappings you may select this one as well.
+        // mappings "net.fabricmc:yarn:1.19+build.2:v2"
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'com.matthewprenger.cursegradle'
-apply plugin: 'maven-publish'
-apply plugin: 'com.wynprice.cursemaven'
 
-apply from: 'https://files.saps.dev/ci/git-md-changelog.gradle'
+allprojects {
+    apply plugin: "java"
+    apply plugin: "architectury-plugin"
+    apply plugin: "maven-publish"
+    apply plugin: 'com.matthewprenger.cursegradle'
 
-def ENV = System.getenv()
+    def ENV = System.getenv()
 
-
-version = "${project_version}-build.${ENV.GITHUB_RUN_NUMBER ?: 9999}+mc${minecraft_version}"
-group = 'com.sunekaer.mods'
-archivesBaseName = 'SimpleDiscordRichPresence'
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-minecraft {
-    mappings channel: 'official', version: "${minecraft_version}"
-    //accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-    runs {
-        client {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                sdrp {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                sdrp {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
-}
-
-repositories {
-    mavenLocal()
-    maven { url "https://maven.latmod.com/" }
-    maven { url 'https://jitpack.io' }
-}
-
-dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    implementation 'com.github.JnCrMx:discord-game-sdk4j:0.5.5'
-}
-
-jar {
-    manifest {
-        attributes([
-                "Specification-Title": "sdrp",
-                "Specification-Vendor": "Sunekaer",
-                "Specification-Version": "1", // We are version 1 of ourselves
-                "Implementation-Title": project.name,
-                "Implementation-Version": "${version}",
-                "Implementation-Vendor" :"Sunekaer",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
-}
-
-jar.finalizedBy('reobfJar')
-
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    classifier 'deobf'
-}
-
-build.dependsOn deobfJar
-
-artifacts {
-    archives deobfJar
-}
-
-task sourcesJar(type: Jar) {
-    classifier = "sources"
-    from sourceSets.main.allJava
-}
-
-artifacts {
-    archives sourcesJar
-    archives deobfJar
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = archivesBaseName
-            artifact(jar) {
-                classifier null
-            }
-            artifact(sourcesJar) {
-                builtBy sourcesJar
-            }
-            artifact(deobfJar) {
-                builtBy deobfJar
-            }
-        }
-    }
-
+    archivesBaseName = rootProject.archives_base_name
+    version = "${mod_version}-build.${ENV.GITHUB_RUN_NUMBER ?: 9999}+mc${minecraft_version}"
+    group = rootProject.maven_group
 
     repositories {
-        if (ENV.NANITE_DEPLOY) {
-            maven {
-                url "https://maven.nanite.dev/"
-                credentials {
-                    username = "nanite"
-                    password = "${ENV.NANITE_DEPLOY}"
-                }
-            }
-        }
+        maven { url 'https://jitpack.io' }
     }
-}
 
-if (ENV.CURSE_DEPLOY) {
-    curseforge {
-        apiKey = ENV.CURSE_DEPLOY
-        project {
-            id = "334853"
-            releaseType = "release"
-            addGameVersion "${minecraft_version}"
-            addGameVersion "Forge"
-            mainArtifact(jar)
-            changelog = getGitChangelog
-            changelogType = 'markdown'
-        }
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+        options.release = 17
+    }
+
+    java {
+        withSourcesJar()
     }
 }
