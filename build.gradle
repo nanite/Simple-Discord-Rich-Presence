@@ -10,6 +10,7 @@ architectury {
 
 subprojects {
     apply plugin: "dev.architectury.loom"
+    apply from: "https://files.latmod.com/public/markdown-git-changelog.gradle"
 
     loom {
         silentMojangMappingsLicense()
