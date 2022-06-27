@@ -107,7 +107,7 @@ if (ENV.CURSE_DEPLOY) {
             addGameVersion "Forge"
             addGameVersion "Java 17"
             addGameVersion "${minecraft_version}"
-            mainArtifact(remapJar)
+            mainArtifact(remapJar.archivePath)
             relations {
                 requiredDependency 'architectury-api'
             }
