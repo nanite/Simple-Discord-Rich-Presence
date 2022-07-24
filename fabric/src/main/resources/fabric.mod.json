@@ -8,7 +8,7 @@
     "Sunekaer"
   ],
   "contact": {
-    "homepage": "https://github.com/nanite/Simple-Discord-Rich-Presence",
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/simple-discord-rich-presence",
     "sources": "https://github.com/nanite/Simple-Discord-Rich-Presence"
   },
   "license": "All Rights Reserved",
@@ -25,7 +25,7 @@
   ],
   "depends": {
     "fabric": "*",
-    "minecraft": ">=1.19",
-    "architectury": ">=5.6.22"
+    "minecraft": ">=1.18.2",
+    "architectury": ">=4.6.77"
   }
 }
