@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "sdrp",
+  "version": "${version}",
+  "name": "Simple Discord Rich Presence",
+  "description": "Simple Discord Rich Presence",
+  "authors": [
+    "Sunekaer"
+  ],
+  "contact": {
+    "homepage": "https://github.com/nanite/Simple-Discord-Rich-Presence",
+    "sources": "https://github.com/nanite/Simple-Discord-Rich-Presence"
+  },
+  "license": "All Rights Reserved",
+  "icon": "assets/sdrp/logo.png",
+  "environment": "client",
+  "entrypoints": {
+    "main": [
+      "com.sunekaer.sdrp.fabric.SDRPFabric"
+    ]
+  },
+  "mixins": [
+    "sdrp.mixins.json",
+    "sdrp-common.mixins.json"
+  ],
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=1.19",
+    "architectury": ">=5.6.22"
+  }
+}

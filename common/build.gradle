@@ -1,0 +1,44 @@
+architectury {
+    common(rootProject.enabled_platforms.split(","))
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/sdrp.accesswidener")
+}
+
+configurations {
+    shadowCommon
+}
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+
+    implementation('com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e')
+    shadowCommon('com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e')
+
+    // Remove the next line if you don't want to depend on the API
+    modApi "dev.architectury:architectury:${rootProject.architectury_version}"
+}
+
+def ENV = System.getenv()
+
+publishing {
+    publications {
+        mavenCommon(MavenPublication) {
+            artifactId = rootProject.archives_base_name + "-" + project.name
+            from components.java
+        }
+    }
+
+    repositories {
+        if (ENV.NANITE_DEPLOY) {
+            maven {
+                url "https://maven.nanite.dev/"
+                credentials {
+                    username = "nanite"
+                    password = "${ENV.NANITE_DEPLOY}"
+                }
+            }
+        }
+    }
+}
