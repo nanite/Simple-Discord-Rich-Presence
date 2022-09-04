@@ -42,10 +42,6 @@ public class SDRP {
         ClientLifecycleEvent.CLIENT_STOPPING.register((minecraft) -> shutdownDiscordClient());
         Runtime.getRuntime().addShutdownHook(new Thread(SDRP::shutdownDiscordClient));
 
-        if (Platform.isModLoaded("kubejs")) {
-            SDRPKubeJSIntegration.init();
-        }
-
         EntityEvent.ADD.register(SDRP::clientJoinEvent);
         ClientGuiEvent.INIT_POST.register(SDRP::screenEvent);
     }
