@@ -6,7 +6,7 @@ import com.jagrosh.discordipc.entities.RichPresence;
 import com.jagrosh.discordipc.entities.User;
 import com.jagrosh.discordipc.entities.pipe.PipeStatus;
 import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
-import com.sunekaer.sdrp.config.Config;
+import com.sunekaer.sdrp.SDRP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class RPClient {
     public final ArrayBlockingQueue<RichPresence> stateUpdateQueue = new ArrayBlockingQueue<>(24);
 
     public RPClient() {
-        if (!Config.get().data.enabled.get()) {
+        if (!SDRP.config.enabled) {
             LOGGER.info("Preventing Simple Discord Rich Presence from starting as it's disabled");
             return;
         }
@@ -52,8 +52,8 @@ public class RPClient {
             return;
         }
 
-        this.client = new IPCClient(Config.get().data.clientId.get());
-        this.client.setListener(new IPCListener(){
+        this.client = new IPCClient(SDRP.config.clientId);
+        this.client.setListener(new IPCListener() {
             @Override
             public void onReady(IPCClient client, User user) {
                 LOGGER.info("Discord client ready");
@@ -113,7 +113,7 @@ public class RPClient {
      */
     public void setState(RichPresence context) {
         // Don't work if it's disabled
-        if (!Config.get().data.enabled.get()) {
+        if (!SDRP.config.enabled) {
             return;
         }
 

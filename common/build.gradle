@@ -16,6 +16,8 @@ dependencies {
     implementation('com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e')
     shadowCommon('com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e')
 
+    modApi("me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}")
+
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
 

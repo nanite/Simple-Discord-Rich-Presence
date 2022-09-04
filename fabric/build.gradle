@@ -29,6 +29,8 @@ dependencies {
 
     modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
 
+    modApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}")
+
     implementation 'com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e'
     shadowCommon 'com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e'
 
