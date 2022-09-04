@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[42,)"
+loaderVersion = "[43,)"
 issueTrackerURL="https://github.com/Sunekaer/Simple-Discord-Rich-Presence/issues"
 license="All Rights Reserved"
 
@@ -18,20 +18,27 @@ Simple Discord Rich Presence
 [[dependencies.sdrp]]
 modId = "forge"
 mandatory = true
-versionRange = "[42,)"
+versionRange = "[43,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.sdrp]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.19.1,)"
+versionRange = "[1.19.2,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.sdrp]]
 modId = "architectury"
 mandatory = true
-versionRange = "[6.0.34,)"
+versionRange = "[6.2.43,)"
 ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.sdrp]]
+modId = "cloth_config"
+mandatory = true
+versionRange = "[8.1.77,)"
+ordering = "NONE"
 side = "BOTH"

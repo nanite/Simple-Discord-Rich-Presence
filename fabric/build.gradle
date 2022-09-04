@@ -23,17 +23,32 @@ configurations {
     developmentFabric.extendsFrom common
 }
 
+repositories {
+    maven {
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
+
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
     modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
 
+    modApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}")
+
     implementation 'com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e'
     shadowCommon 'com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e'
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+
+    modImplementation("curse.maven:ingredient-extension-api-557735:${rootProject.ingredient_extension_file}")
+    modImplementation "dev.latvian.mods:kubejs-fabric:${rootProject.kubejs_version}"
+    modImplementation "dev.latvian.mods:rhino-fabric:${rootProject.rhino_version}"
 }
 
 processResources {
@@ -110,6 +125,7 @@ if (ENV.CURSE_DEPLOY) {
             mainArtifact(remapJar.archivePath)
             relations {
                 requiredDependency 'architectury-api'
+                requiredDependency 'cloth-config'
             }
             changelog = getGitChangelog
             changelogType = 'markdown'

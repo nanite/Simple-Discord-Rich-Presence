@@ -10,14 +10,29 @@ configurations {
     shadowCommon
 }
 
+repositories {
+    maven {
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
+
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
 
     implementation('com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e')
     shadowCommon('com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e')
 
+    modApi("me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}")
+
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
+
+    modImplementation("curse.maven:ingredient-extension-api-557735:${rootProject.ingredient_extension_file}")
+    modImplementation "dev.latvian.mods:kubejs-fabric:${rootProject.kubejs_version}"
+    modImplementation "dev.latvian.mods:rhino-fabric:${rootProject.rhino_version}"
 }
 
 def ENV = System.getenv()

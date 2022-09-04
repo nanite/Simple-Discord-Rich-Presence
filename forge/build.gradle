@@ -29,12 +29,17 @@ dependencies {
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
 
+    modApi("me.shedaniel.cloth:cloth-config-forge:${rootProject.cloth_config_version}")
+
     implementation 'com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e'
     forgeRuntimeLibrary 'com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e'
     shadowCommon('com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e')
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+
+    modImplementation "dev.latvian.mods:kubejs-forge:${rootProject.kubejs_version}"
+    modImplementation "dev.latvian.mods:rhino-forge:${rootProject.rhino_version}"
 }
 
 processResources {
@@ -111,6 +116,7 @@ if (ENV.CURSE_DEPLOY) {
             mainArtifact(remapJar.archivePath)
             relations {
                 requiredDependency 'architectury-api'
+                requiredDependency 'cloth-config'
             }
             changelog = getGitChangelog
             changelogType = 'markdown'
