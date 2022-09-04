@@ -35,3 +35,10 @@ mandatory = true
 versionRange = "[4.6.77,)"
 ordering = "AFTER"
 side = "BOTH"
+
+[[dependencies.sdrp]]
+modId = "cloth_config"
+mandatory = true
+versionRange = "[6.2.62,7.0)"
+ordering = "NONE"
+side = "BOTH"
