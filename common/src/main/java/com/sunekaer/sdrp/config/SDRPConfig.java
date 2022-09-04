@@ -16,7 +16,7 @@ import java.util.Optional;
 @Config(name = SDRP.MOD_ID + "-common")
 public class SDRPConfig implements ConfigData {
     @Comment("Your Discord App ID")
-    public long clientId = 0L;
+    public long clientId = 608012526537408579L;
 
     @Comment("If you wish to disable Discord Rich Presence, set this to false.")
     public boolean enabled = true;
