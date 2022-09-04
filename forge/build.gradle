@@ -116,6 +116,7 @@ if (ENV.CURSE_DEPLOY) {
             mainArtifact(remapJar.archivePath)
             relations {
                 requiredDependency 'architectury-api'
+                requiredDependency 'cloth-config'
             }
             changelog = getGitChangelog
             changelogType = 'markdown'
