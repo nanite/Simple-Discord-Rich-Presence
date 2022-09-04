@@ -9,8 +9,8 @@ import java.util.Map;
 
 public class State {
     public static final Map<String, State> PRESETS = ImmutableMap.of(
-            "loading", new State("Starting Minecraft", "Starting Minecraft", "loading"),
-            "menu", new State("Main Menu", "Main Menu", "menu")
+            "loading", new State("sdrp.loading", "sdrp.loading", "loading"),
+            "menu", new State("sdrp.mainmenu", "sdrp.mainmenu", "menu")
     );
 
     public String message;
@@ -25,10 +25,10 @@ public class State {
 
     public RichPresence createPresence() {
         return new RichPresence.Builder()
-                .setState(message)
+                .setState(I18n.get(message))
                 .setStartTimestamp(SDRP.START_TIME)
                 .setLargeImage("logo", I18n.get("sdrp.logo"))
-                .setSmallImage(imageKey, imageName)
+                .setSmallImage(imageKey, I18n.get(imageName))
                 .build();
     }
 }

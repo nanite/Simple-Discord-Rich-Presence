@@ -40,6 +40,13 @@ allprojects {
 
     repositories {
         maven { url 'https://jitpack.io' }
+        maven {
+            url "https://maven.saps.dev/minecraft"
+            content {
+                includeGroup "dev.ftb.mods"
+                includeGroup "dev.latvian.mods"
+            }
+        }
     }
 
     tasks.withType(JavaCompile) {

@@ -5,11 +5,13 @@ import com.mojang.realmsclient.RealmsMainScreen;
 import com.sunekaer.sdrp.config.Config;
 import com.sunekaer.sdrp.discord.RPClient;
 import com.sunekaer.sdrp.discord.State;
+import com.sunekaer.sdrp.integration.kubejs.SDRPKubeJSIntegration;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.hooks.client.screen.ScreenAccess;
+import dev.architectury.platform.Platform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
@@ -31,6 +33,10 @@ public class SDRP {
         ClientLifecycleEvent.CLIENT_STOPPING.register((minecraft) -> shutdownDiscordClient());
         Runtime.getRuntime().addShutdownHook(new Thread(SDRP::shutdownDiscordClient));
 
+        if (Platform.isModLoaded("kubejs")) {
+            SDRPKubeJSIntegration.init();
+        }
+
         EntityEvent.ADD.register(SDRP::clientJoinEvent);
         ClientGuiEvent.INIT_POST.register(SDRP::screenEvent);
     }
@@ -39,7 +45,7 @@ public class SDRP {
      * When the screen is part of the main menu screens, attempt to update discord about it
      */
     private static void screenEvent(Screen screen, ScreenAccess screenAccess) {
-        if (!Config.get().data.enabled.get() || !State.PRESETS.containsKey("menu")) {
+        if (!Config.get().data.enabled.get() || !State.PRESETS.containsKey("menu") || !Config.get().data.screenEvent.get()) {
             return;
         }
 
@@ -56,7 +62,7 @@ public class SDRP {
      * When the client joins, send out a setDim event to discord
      */
     private static EventResult clientJoinEvent(Entity entity, Level level) {
-        if (!Config.get().data.enabled.get()) {
+        if (!Config.get().data.enabled.get() || !Config.get().data.clientJoinEvent.get()) {
             return EventResult.pass();
         }
 
