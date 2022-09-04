@@ -8,7 +8,7 @@ import static com.sunekaer.sdrp.SDRP.RP_CLIENT;
 
 public class SDRPKubeJSWrapper {
     public static void setState(String message, String imageName, String imageKey) {
-        RP_CLIENT.setState(new State(I18n.get(message),  I18n.get(imageName), I18n.get(imageKey)).createPresence());
+        RP_CLIENT.setState(new State(I18n.get(message),  I18n.get(imageName), imageKey).createPresence());
     }
 
     public static RichPresence getCurrentState() {
