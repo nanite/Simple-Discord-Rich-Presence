@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class State {
     public static final Map<String, State> PRESETS = ImmutableMap.of(
-            "loading", new State("sdrp.loading", "sdrp.loading", "loading"),
+            "loading", new State("Starting Minecraft", "Starting Minecraft", "loading"),
             "menu", new State("sdrp.mainmenu", "sdrp.mainmenu", "menu")
     );
 
