@@ -26,6 +26,6 @@
     "fabric": "*",
     "minecraft": ">=1.19.2",
     "architectury": ">=6.2.43",
-    "cloth_config": ">=8.0.75"
+    "cloth-config": ">=8.0.75"
   }
 }
