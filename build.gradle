@@ -39,12 +39,22 @@ allprojects {
     group = rootProject.maven_group
 
     repositories {
-        maven { url 'https://jitpack.io' }
         maven {
-            url "https://maven.saps.dev/minecraft"
+            url "https://maven.saps.dev/releases"
             content {
                 includeGroup "dev.ftb.mods"
                 includeGroup "dev.latvian.mods"
+            }
+        }
+        maven { url 'https://jitpack.io'
+            content {
+                includeGroup "com.github.cbyrneee"
+            }
+        }
+        maven {
+            url "https://maven.blamejared.com"
+            content {
+                includeGroup "com.faux.ingredientextension"
             }
         }
     }

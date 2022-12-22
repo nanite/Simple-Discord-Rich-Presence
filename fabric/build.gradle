@@ -24,12 +24,7 @@ configurations {
 }
 
 repositories {
-    maven {
-        url "https://www.cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
+
 }
 
 dependencies {
@@ -46,7 +41,7 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
-    modImplementation("curse.maven:ingredient-extension-api-557735:${rootProject.ingredient_extension_file}")
+    modImplementation "com.faux.ingredientextension:IngredientExtensionAPI-fabric-1.19.2:${rootProject.ingredient_extension_version}"
     modImplementation "dev.latvian.mods:kubejs-fabric:${rootProject.kubejs_version}"
     modImplementation "dev.latvian.mods:rhino-fabric:${rootProject.rhino_version}"
 }
