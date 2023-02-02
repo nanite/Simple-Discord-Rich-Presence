@@ -104,9 +104,9 @@ publishing {
     }
 }
 
-if (ENV.CURSE_DEPLOY) {
+if (ENV.CURSE_TOKEN) {
     curseforge {
-        apiKey = ENV.CURSE_DEPLOY
+        apiKey = ENV.CURSE_TOKEN
         project {
             id = project.curseforge_id
             releaseType = "release"
@@ -118,8 +118,10 @@ if (ENV.CURSE_DEPLOY) {
                 requiredDependency 'architectury-api'
                 requiredDependency 'cloth-config'
             }
-            changelog = getGitChangelog
+            changelog = file("../CHANGELOG.md")
             changelogType = 'markdown'
         }
     }
 }
+
+rootProject.tasks.getByName("curseforgePublish").dependsOn tasks.getByName("curseforge")
