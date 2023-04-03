@@ -1,0 +1,16 @@
+{
+  "sdrp.logo": "Logo du pack",
+  "sdrp.mainmenu": "Menu principal",
+  "sdrp.overworld.in": "Dans l'Overworld",
+  "sdrp.overworld": "Overworld",
+  "sdrp.the_nether.in": "Dans le Nether",
+  "sdrp.the_nether": "Nether",
+  "sdrp.the_end.in": "Dans l'End",
+  "sdrp.the_end": "The End",
+  "sdrp.compact_world.in": "Dans le monde compact",
+  "sdrp.compact_world": "Monde compact",
+  "sdrp.dungeon.in": "Dans le monde de donjon",
+  "sdrp.dungeon": "Monde de donjon",
+  "sdrp.spatial_storage.in": "Dans le monde de donjon",
+  "sdrp.spatial_storage": "Monde de donjon"
+}
