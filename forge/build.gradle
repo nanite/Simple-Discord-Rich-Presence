@@ -94,7 +94,7 @@ publishing {
     repositories {
         if (ENV.NANITE_TOKEN) {
             maven {
-                url "https://maven.nanite.dev/"
+                url "https://maven.nanite.dev/releases"
                 credentials {
                     username = "nanite"
                     password = "${ENV.NANITE_TOKEN}"
@@ -123,3 +123,5 @@ if (ENV.CURSE_TOKEN) {
         }
     }
 }
+
+rootProject.tasks.getByName("curseforgePublish").dependsOn tasks.getByName("curseforge")
