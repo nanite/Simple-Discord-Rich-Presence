@@ -121,7 +121,7 @@ if (ENV.CURSE_TOKEN) {
                 requiredDependency 'architectury-api'
                 requiredDependency 'cloth-config'
             }
-            changelog = getGitChangelog
+            changelog = file("../CHANGELOG.md")
             changelogType = 'markdown'
         }
     }
