@@ -23,9 +23,8 @@ dependencies {
 
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
 
-    modImplementation "com.faux.ingredientextension:IngredientExtensionAPI-fabric-1.19.2:${rootProject.ingredient_extension_version}"
-    modImplementation "dev.latvian.mods:kubejs-fabric:${rootProject.kubejs_version}"
-    modImplementation "dev.latvian.mods:rhino-fabric:${rootProject.rhino_version}"
+//    modImplementation "dev.latvian.mods:kubejs-fabric:${rootProject.kubejs_version}"
+//    modImplementation "dev.latvian.mods:rhino-fabric:${rootProject.rhino_version}"
 }
 
 def ENV = System.getenv()
@@ -39,12 +38,12 @@ publishing {
     }
 
     repositories {
-        if (ENV.NANITE_DEPLOY) {
+        if (ENV.NANITE_TOKEN) {
             maven {
                 url "https://maven.nanite.dev/"
                 credentials {
                     username = "nanite"
-                    password = "${ENV.NANITE_DEPLOY}"
+                    password = "${ENV.NANITE_TOKEN}"
                 }
             }
         }

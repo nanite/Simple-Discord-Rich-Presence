@@ -38,8 +38,8 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
-    modImplementation "dev.latvian.mods:kubejs-forge:${rootProject.kubejs_version}"
-    modImplementation "dev.latvian.mods:rhino-forge:${rootProject.rhino_version}"
+//    modImplementation "dev.latvian.mods:kubejs-forge:${rootProject.kubejs_version}"
+//    modImplementation "dev.latvian.mods:rhino-forge:${rootProject.rhino_version}"
 }
 
 processResources {
@@ -92,21 +92,21 @@ publishing {
     }
 
     repositories {
-        if (ENV.NANITE_DEPLOY) {
+        if (ENV.NANITE_TOKEN) {
             maven {
                 url "https://maven.nanite.dev/"
                 credentials {
                     username = "nanite"
-                    password = "${ENV.NANITE_DEPLOY}"
+                    password = "${ENV.NANITE_TOKEN}"
                 }
             }
         }
     }
 }
 
-if (ENV.CURSE_DEPLOY) {
+if (ENV.CURSE_TOKEN) {
     curseforge {
-        apiKey = ENV.CURSE_DEPLOY
+        apiKey = ENV.CURSE_TOKEN
         project {
             id = project.curseforge_id
             releaseType = "release"

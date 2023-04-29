@@ -5,7 +5,7 @@ import com.mojang.realmsclient.RealmsMainScreen;
 import com.sunekaer.sdrp.config.SDRPConfig;
 import com.sunekaer.sdrp.discord.RPClient;
 import com.sunekaer.sdrp.discord.State;
-import com.sunekaer.sdrp.integration.kubejs.SDRPKubeJSIntegration;
+//import com.sunekaer.sdrp.integration.kubejs.SDRPKubeJSIntegration;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;

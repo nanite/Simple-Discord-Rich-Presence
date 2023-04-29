@@ -7,29 +7,9 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 30 # Gets the last 30 commits so the changelog might work
-      - name: Set up JDK 17
-        uses: actions/setup-java@v1
-        with:
-          java-version: 17
-      - name: Build & release to curseforge
-        env:
-          GIT_COMMIT: ${{ github.event.after }}
-          GIT_PREVIOUS_COMMIT: ${{ github.event.before }}
-          NANITE_DEPLOY: ${{ secrets.NANITE_DEPLOY  }}
-          CURSE_DEPLOY: ${{ secrets.CURSE_DEPLOY }}
-        run: |
-          chmod +x ./gradlew
-          ./gradlew build publish curseforge --stacktrace --no-daemon
+    if: |
+      !contains(github.event.head_commit.message, '[ciskip]')
+    uses: nanite/workflows/.github/workflows/standard-arch-release.yml@v1
+    secrets:
+      nanite-token: ${{ secrets.NANITE_DEPLOY }}
+      curse-token: ${{ secrets.CURSE_DEPLOY }}
