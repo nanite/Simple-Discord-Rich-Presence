@@ -91,7 +91,11 @@ publishMods {
         from(curseForgeOptions, fabricOptions)
         requires {
             slug = "fabric-api"
+        }
+        requires {
             slug = "cloth-config"
+        }
+        requires {
             slug = "architectury-api"
         }
     }
@@ -100,6 +104,8 @@ publishMods {
         from(curseForgeOptions, forgeOptions)
         requires {
             slug = "cloth-config"
+        }
+        requires {
             slug = "architectury-api"
         }
     }
@@ -109,7 +115,12 @@ publishMods {
             from(modrinthOptions, fabricOptions)
             requires {
                 slug = "fabric-api"
+            }
+            requires {
+
                 slug = "cloth-config"
+            }
+            requires {
                 slug = "architectury-api"
             }
         }
@@ -118,6 +129,8 @@ publishMods {
             from(modrinthOptions, forgeOptions)
             requires {
                 slug = "cloth-config"
+            }
+            requires {
                 slug = "architectury-api"
             }
         }
