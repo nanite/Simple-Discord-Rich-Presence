@@ -1,7 +1,7 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
-    id "com.matthewprenger.cursegradle" version "1.4.0" apply false
+    id "dev.architectury.loom" version "1.2-SNAPSHOT" apply false
+    id "me.modmuss50.mod-publish-plugin" version "0.3.0"
 }
 
 architectury {
@@ -10,7 +10,6 @@ architectury {
 
 subprojects {
     apply plugin: "dev.architectury.loom"
-    apply from: "https://files.latmod.com/public/markdown-git-changelog.gradle"
 
     loom {
         silentMojangMappingsLicense()
@@ -29,7 +28,6 @@ allprojects {
     apply plugin: "java"
     apply plugin: "architectury-plugin"
     apply plugin: "maven-publish"
-    apply plugin: 'com.matthewprenger.cursegradle'
 
     def ENV = System.getenv()
 
@@ -68,4 +66,57 @@ allprojects {
     }
 }
 
-task curseforgePublish
+publishMods {
+    dryRun = providers.environmentVariable("CURSE_TOKEN").getOrNull() == null
+    changelog = file("./CHANGELOG.md").text
+    version = "${mod_version}"
+    type = STABLE
+
+    def fabricOptions = publishOptions {
+        file = project.provider { project(":fabric").tasks.remapJar }.flatMap { it.archiveFile }
+        displayName = "${project.name} Fabric ${mod_version}+mc${minecraft_version}"
+        modLoaders.add("fabric")
+    }
+
+    def forgeOptions = publishOptions {
+        file = project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
+        displayName = "${project.name} Forge ${mod_version}+mc${minecraft_version}"
+        modLoaders.add("forge")
+    }
+
+    def curseForgeOptions = curseforgeOptions {
+        accessToken = providers.environmentVariable("CURSE_TOKEN")
+        projectId = "${curseforge_id}"
+        minecraftVersions.add("${minecraft_version}")
+    }
+
+    def modrinthOptions = modrinthOptions {
+        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+        projectId = "${modrinth_id}"
+        minecraftVersions.add("${minecraft_version}")
+    }
+
+    curseforge("curseforgeFabric") {
+        from(curseForgeOptions, fabricOptions)
+        requires {
+            slug = "fabric-api"
+        }
+    }
+
+    curseforge("curseforgeForge") {
+        from(curseForgeOptions, forgeOptions)
+    }
+
+    if (providers.environmentVariable("MODRINTH_TOKEN").getOrNull() != null) {
+        modrinth("modrinthFabric") {
+            from(modrinthOptions, fabricOptions)
+            requires {
+                slug = "fabric-api"
+            }
+        }
+
+        modrinth("modrinthForge") {
+            from(modrinthOptions, forgeOptions)
+        }
+    }
+}
