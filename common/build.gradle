@@ -16,8 +16,10 @@ repositories {
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
 
-    implementation('com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e')
-    shadowCommon('com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e')
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    implementation('com.github.jagrosh:DiscordIPC:a8d6631cc9')
+    shadowCommon('com.github.jagrosh:DiscordIPC:a8d6631cc9')
 
     modApi("me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}")
 

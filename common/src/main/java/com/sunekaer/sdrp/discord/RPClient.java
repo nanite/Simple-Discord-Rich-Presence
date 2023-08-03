@@ -54,7 +54,6 @@ public class RPClient {
 
         this.client = new IPCClient(SDRP.config.clientId);
         this.client.setListener(new IPCListener() {
-            @Override
             public void onReady(IPCClient client, User user) {
                 LOGGER.info("Discord client ready");
 

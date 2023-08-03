@@ -35,8 +35,8 @@ dependencies {
 
     modApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}")
 
-    implementation 'com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e'
-    shadowCommon 'com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e'
+    implementation 'com.github.jagrosh:DiscordIPC:a8d6631cc9'
+    shadowCommon 'com.github.jagrosh:DiscordIPC:a8d6631cc9'
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
@@ -57,7 +57,7 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    setArchiveClassifier("dev-shadow")
 }
 
 remapJar {
@@ -65,11 +65,11 @@ remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
     archiveBaseName.set "${rootProject.archives_base_name}-${project.name}"
-    classifier null
+    setArchiveClassifier(null)
 }
 
 jar {
-    classifier "dev"
+    setArchiveClassifier("dev")
 }
 
 sourcesJar {
