@@ -91,11 +91,17 @@ publishMods {
         from(curseForgeOptions, fabricOptions)
         requires {
             slug = "fabric-api"
+            slug = "cloth-config"
+            slug = "architectury-api"
         }
     }
 
     curseforge("curseforgeForge") {
         from(curseForgeOptions, forgeOptions)
+        requires {
+            slug = "cloth-config"
+            slug = "architectury-api"
+        }
     }
 
     if (providers.environmentVariable("MODRINTH_TOKEN").getOrNull() != null) {
@@ -103,11 +109,17 @@ publishMods {
             from(modrinthOptions, fabricOptions)
             requires {
                 slug = "fabric-api"
+                slug = "cloth-config"
+                slug = "architectury-api"
             }
         }
 
         modrinth("modrinthForge") {
             from(modrinthOptions, forgeOptions)
+            requires {
+                slug = "cloth-config"
+                slug = "architectury-api"
+            }
         }
     }
 }
