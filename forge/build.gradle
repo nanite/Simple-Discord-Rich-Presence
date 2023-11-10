@@ -24,6 +24,7 @@ configurations {
     developmentForge.extendsFrom common
 }
 
+
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.forge_version}"
     // Remove the next line if you don't want to depend on the API
@@ -31,9 +32,14 @@ dependencies {
 
     modApi("me.shedaniel.cloth:cloth-config-forge:${rootProject.cloth_config_version}")
 
-    implementation 'com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e'
-    forgeRuntimeLibrary 'com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e'
-    shadowCommon('com.github.cbyrneee:DiscordIPC:e18542f600ee48b1eb8cbb255380bba0128dc87e')
+    implementation 'com.github.jagrosh:DiscordIPC:a8d6631cc9'
+    forgeRuntimeLibrary 'com.github.jagrosh:DiscordIPC:a8d6631cc9'
+
+
+    include(implementation 'com.github.jagrosh:DiscordIPC:a8d6631cc9')
+    include(implementation "com.kohlschutter.junixsocket:junixsocket-common:2.6.2")
+    include(implementation "com.kohlschutter.junixsocket:junixsocket-native-common:2.6.2")
+    include(implementation "org.json:json:20210307")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
