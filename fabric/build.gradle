@@ -103,7 +103,7 @@ publishing {
     repositories {
         if (ENV.NANITE_DEPLOY) {
             maven {
-                url "https://maven.nanite.dev/"
+                url "https://maven.nanite.dev/releases"
                 credentials {
                     username = "nanite"
                     password = "${ENV.NANITE_DEPLOY}"
