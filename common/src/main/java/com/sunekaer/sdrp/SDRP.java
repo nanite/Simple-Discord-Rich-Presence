@@ -44,6 +44,10 @@ public class SDRP {
 
         EntityEvent.ADD.register(SDRP::clientJoinEvent);
         ClientGuiEvent.INIT_POST.register(SDRP::screenEvent);
+
+        if (Platform.isModLoaded("kubejs")) {
+            SDRPKubeJSIntegration.setup();
+        }
     }
 
     /**
