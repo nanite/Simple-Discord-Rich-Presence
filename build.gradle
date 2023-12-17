@@ -1,6 +1,6 @@
 plugins {
-    id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "1.4-SNAPSHOT" apply false
+    id "architectury-plugin" version "3.4.151"
+    id "dev.architectury.loom" version "1.4.373" apply false
     id "me.modmuss50.mod-publish-plugin" version "0.4.5"
 }
 
@@ -40,6 +40,7 @@ allprojects {
                 includeGroup "dev.latvian.mods"
             }
         }
+        maven { url "https://maven.saps.dev/mirror" }
         maven { url 'https://jitpack.io'
             content {
                 includeGroup "com.github.jagrosh"
@@ -60,6 +61,20 @@ allprojects {
 
     java {
         withSourcesJar()
+    }
+
+    publishing {
+        repositories {
+            if (ENV.NANITE_TOKEN) {
+                maven {
+                    url "https://maven.nanite.dev/releases"
+                    credentials {
+                        username = "nanite"
+                        password = "${ENV.NANITE_TOKEN}"
+                    }
+                }
+            }
+        }
     }
 }
 

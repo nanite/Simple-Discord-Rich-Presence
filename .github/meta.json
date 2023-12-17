@@ -1,4 +1,39 @@
 {
-  "curseID" : 334853,
-  "maven" : "https://maven.nanite.dev/releases/com/sunekaer/mods/SimpleDiscordRichPresence"
+  "spec": 2,
+  "maven": [
+    {
+      "name": "Common",
+      "url": "https://maven.nanite.dev/releases/com/sunekaer/mods/SimpleDiscordRichPresence-common"
+    },
+    {
+      "name": "Forge",
+      "url": "https://maven.nanite.dev/releases/com/sunekaer/mods/SimpleDiscordRichPresence-forge"
+    },
+    {
+      "name": "Fabric",
+      "url": "https://maven.nanite.dev/releases/com/sunekaer/mods/SimpleDiscordRichPresence-fabric"
+    }
+  ],
+  "providers": [
+    {
+      "type": "identity",
+      "name": "CurseForge",
+      "id": "SCAopByd",
+      "slug": "srdp",
+      "variants": ["forge", "fabric"]
+    },
+    {
+      "type": "identity",
+      "name": "Modrinth",
+      "id": "334853",
+      "slug": "simple-discord-rich-presence",
+      "variants": ["forge", "fabric"]
+    },
+    {
+      "type": "url",
+      "name": "GitHub",
+      "url": "https://github.com/nanite/simple-discord-rich-presence",
+      "variants": ["forge", "fabric", "common"]
+    }
+  ]
 }

@@ -1,9 +1,5 @@
-## 4.0.3
-
-### Added
-
-- KubeJS integration back in with custom events
+## 5.0.0
 
 ### Changed
 
-- Improved the readme a bunch!
+- Updated to 1.20.2

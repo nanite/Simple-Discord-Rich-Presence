@@ -6,13 +6,11 @@ import com.sunekaer.sdrp.config.SDRPConfig;
 import com.sunekaer.sdrp.discord.RPClient;
 import com.sunekaer.sdrp.discord.State;
 //import com.sunekaer.sdrp.integration.kubejs.SDRPKubeJSIntegration;
-import com.sunekaer.sdrp.integration.kubejs.SDRPKubeJSIntegration;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.hooks.client.screen.ScreenAccess;
-import dev.architectury.platform.Platform;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.minecraft.client.Minecraft;
@@ -46,9 +44,9 @@ public class SDRP {
         EntityEvent.ADD.register(SDRP::clientJoinEvent);
         ClientGuiEvent.INIT_POST.register(SDRP::screenEvent);
 
-        if (Platform.isModLoaded("kubejs")) {
-            SDRPKubeJSIntegration.setup();
-        }
+//        if (Platform.isModLoaded("kubejs")) {
+//            SDRPKubeJSIntegration.setup();
+//        }
     }
 
     /**
