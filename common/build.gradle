@@ -25,8 +25,8 @@ dependencies {
 
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
 
-//    modImplementation "dev.latvian.mods:kubejs-fabric:${rootProject.kubejs_version}"
-//    modImplementation "dev.latvian.mods:rhino-fabric:${rootProject.rhino_version}"
+    modImplementation "dev.latvian.mods:kubejs:${rootProject.kubejs_version}"
+    modImplementation "dev.latvian.mods:rhino:${rootProject.rhino_version}"
 }
 
 def ENV = System.getenv()

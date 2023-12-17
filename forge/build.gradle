@@ -35,7 +35,6 @@ dependencies {
     implementation 'com.github.jagrosh:DiscordIPC:a8d6631cc9'
     forgeRuntimeLibrary 'com.github.jagrosh:DiscordIPC:a8d6631cc9'
 
-
     include(implementation 'com.github.jagrosh:DiscordIPC:a8d6631cc9')
     include(implementation "com.kohlschutter.junixsocket:junixsocket-common:2.6.2")
     include(implementation "com.kohlschutter.junixsocket:junixsocket-native-common:2.6.2")
@@ -44,8 +43,8 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
-//    modImplementation "dev.latvian.mods:kubejs-forge:${rootProject.kubejs_version}"
-//    modImplementation "dev.latvian.mods:rhino-forge:${rootProject.rhino_version}"
+    modImplementation "dev.latvian.mods:kubejs-forge:${rootProject.kubejs_version}"
+    modImplementation "dev.latvian.mods:rhino-forge:${rootProject.rhino_version}"
 }
 
 processResources {

@@ -44,8 +44,8 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
-//    modImplementation "dev.latvian.mods:kubejs-fabric:${rootProject.kubejs_version}"
-//    modImplementation "dev.latvian.mods:rhino-fabric:${rootProject.rhino_version}"
+    modImplementation "dev.latvian.mods:kubejs-fabric:${rootProject.kubejs_version}"
+    modImplementation "dev.latvian.mods:rhino-fabric:${rootProject.rhino_version}"
 }
 
 processResources {
