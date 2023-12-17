@@ -8,6 +8,7 @@
 <a href="https://maven.nanite.dev/#/releases/com/sunekaer/mods"><img src="https://cdn.nanite.dev/data/assets/available-on-nanite.png" height="70" /></a>
 <a href="https://www.curseforge.com/minecraft/mc-mods/architectury-api"><img src="https://cdn.nanite.dev/data/assets/requires-arch.png" height="70" /></a>
 <a href="https://fabricmc.net/"><img src="https://cdn.nanite.dev/data/assets/supports-fabric.png" height="70" /></a>
+<a href="https://neoforged.net"><img src="https://cdn.nanite.dev/data/assets/supports-neoforge.png" height="70" /></a>
 <a href="https://files.minecraftforge.net/net/minecraftforge/forge/"><img src="https://cdn.nanite.dev/data/assets/supports-forge.png" height="70" /></a>
 </p>
 
