@@ -1,3 +1,5 @@
-# Changelog
+## 3.0.6
 
-Updated CI / Build Script
+### Fixed
+
+- KubeJS fields being private on new events
