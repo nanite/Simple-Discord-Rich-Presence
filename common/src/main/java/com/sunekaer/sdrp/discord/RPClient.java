@@ -90,6 +90,9 @@ public class RPClient {
         }
 
         this.client.sendRichPresence(state);
+        if (SDRP.config.logState) {
+            LOGGER.info("Sent state to discord: {}", state.toJson().toString());
+        }
     }
 
     /**

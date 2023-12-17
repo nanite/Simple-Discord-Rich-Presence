@@ -27,6 +27,9 @@ public class SDRPConfig implements ConfigData {
     @Comment("If set to false, it disables the build in clientJoinEvent, which is used to tell when the player is join a world and changing Dimension.")
     public boolean clientJoinEvent = true;
 
+    @Comment("When enabled, the mod will log the current state being sent to Discord")
+    public boolean logState = false;
+
     @Override
     public void validatePostLoad() {
         var oldConfig = SDRPCrossPlatform.getConfigDirectory().resolve("sdrp.json");
