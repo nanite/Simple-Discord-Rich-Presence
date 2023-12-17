@@ -86,14 +86,20 @@ publishMods {
 
     def fabricOptions = publishOptions {
         file = project.provider { project(":fabric").tasks.remapJar }.flatMap { it.archiveFile }
-        displayName = "${project.name} Fabric ${mod_version}+mc${minecraft_version}"
+        displayName = "[FABRIC][${minecraft_version}] ${project.name} ${mod_version}"
         modLoaders.add("fabric")
     }
 
     def forgeOptions = publishOptions {
         file = project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
-        displayName = "${project.name} Forge ${mod_version}+mc${minecraft_version}"
+        displayName = "[FORGE][${minecraft_version}] ${project.name} ${mod_version}"
         modLoaders.add("forge")
+    }
+
+    def neoforgeOptions = publishOptions {
+        file = project.provider { project(":neoforge").tasks.remapJar }.flatMap { it.archiveFile }
+        displayName = "[NEOFORGE][${minecraft_version}] ${project.name} ${mod_version}"
+        modLoaders.add("neoforge")
     }
 
     def curseForgeOptions = curseforgeOptions {
@@ -131,6 +137,16 @@ publishMods {
         }
     }
 
+    curseforge("curseforgeNeoforge") {
+        from(curseForgeOptions, neoforgeOptions)
+        requires {
+            slug = "cloth-config"
+        }
+        requires {
+            slug = "architectury-api"
+        }
+    }
+
     if (providers.environmentVariable("MODRINTH_TOKEN").getOrNull() != null) {
         modrinth("modrinthFabric") {
             from(modrinthOptions, fabricOptions)
@@ -148,6 +164,16 @@ publishMods {
 
         modrinth("modrinthForge") {
             from(modrinthOptions, forgeOptions)
+            requires {
+                slug = "cloth-config"
+            }
+            requires {
+                slug = "architectury-api"
+            }
+        }
+
+        modrinth("modrinthNeoforge") {
+            from(modrinthOptions, neoforgeOptions)
             requires {
                 slug = "cloth-config"
             }
