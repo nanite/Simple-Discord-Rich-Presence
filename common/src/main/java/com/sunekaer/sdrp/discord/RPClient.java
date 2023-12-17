@@ -55,7 +55,7 @@ public class RPClient {
         this.client = new IPCClient(SDRP.config.clientId);
         this.client.setListener(new IPCListener() {
             @Override
-            public void onReady(IPCClient client, User user) {
+            public void onReady(IPCClient client) {
                 LOGGER.info("Discord client ready");
 
                 if (State.PRESETS.containsKey("loading")) {

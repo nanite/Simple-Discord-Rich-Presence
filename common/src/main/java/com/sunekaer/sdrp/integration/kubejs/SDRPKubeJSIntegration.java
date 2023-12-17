@@ -44,9 +44,9 @@ public class SDRPKubeJSIntegration extends KubeJSPlugin {
     }
 
     public static class ClientDimensionChangeEvent extends EventJS {
-        DimensionType dimensionType;
-        Player player;
-        Level level;
+        public DimensionType dimensionType;
+        public Player player;
+        public Level level;
 
         public ClientDimensionChangeEvent(DimensionType dimensionType, Player player, Level level) {
             this.dimensionType = dimensionType;
