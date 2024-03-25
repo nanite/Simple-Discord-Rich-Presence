@@ -39,5 +39,15 @@
       "url": "https://github.com/nanite/simple-discord-rich-presence",
       "variants": ["forge", "fabric", "neoforge", "common"]
     }
-  ]
+  ],
+  "authors" : [
+    {
+      "name": "Sunekaer",
+      "role": "Owner"
+    },
+    {
+      "name": "ErrorMikey",
+      "role": "Contributor"
+    }
+  ] 
 }
