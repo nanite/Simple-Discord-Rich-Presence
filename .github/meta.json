@@ -40,7 +40,7 @@
       "variants": ["forge", "fabric", "neoforge", "common"]
     }
   ],
-  "authors" : [
+  "authors": [
     {
       "name": "Sunekaer",
       "role": "Owner"
