@@ -1,5 +1,5 @@
-## 7.0.0
+## 86.0.0
 
 ### Changed
 
-- Updated to 1.20.5
+- Updated to 1.20.6

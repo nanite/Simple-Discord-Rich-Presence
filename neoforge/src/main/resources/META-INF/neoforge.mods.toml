@@ -18,14 +18,14 @@ Simple Discord Rich Presence
 [[dependencies.sdrp]]
 modId = "neoforge"
 type = "required"
-versionRange = "[20.5,)"
+versionRange = "[20.6,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.sdrp]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.20.5,)"
+versionRange = "[1.20.6,)"
 ordering = "NONE"
 side = "BOTH"
 
