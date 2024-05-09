@@ -1,4 +1,4 @@
-package com.sunekaer.sdrp.integration.kubejs;
+package com.sunekaer.sdrp.neoforge.kubejs;
 
 import com.jagrosh.discordipc.entities.RichPresence;
 import com.sunekaer.sdrp.discord.State;

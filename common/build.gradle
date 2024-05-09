@@ -24,9 +24,6 @@ dependencies {
     modApi("me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}")
 
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
-
-//    modImplementation "dev.latvian.mods:kubejs:${rootProject.kubejs_version}"
-//    modImplementation "dev.latvian.mods:rhino:${rootProject.rhino_version}"
 }
 
 def ENV = System.getenv()

@@ -1,5 +1,5 @@
-## 6.0.0
+## 6.0.1
 
-### Changed
+### Added
 
-- Updated to 1.20.4
+- Added kubejs support back in for NeoForge as KubeJS no longer supports Forge or Fabric
