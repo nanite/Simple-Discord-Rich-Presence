@@ -12,28 +12,42 @@
     {
       "name": "Fabric",
       "url": "https://maven.nanite.dev/releases/com/sunekaer/mods/SimpleDiscordRichPresence-fabric"
+    },
+    {
+      "name": "NeoForge",
+      "url": "https://maven.nanite.dev/releases/com/sunekaer/mods/SimpleDiscordRichPresence-neoforge"
     }
   ],
   "providers": [
     {
       "type": "identity",
-      "name": "CurseForge",
+      "name": "Modrinth",
       "id": "SCAopByd",
       "slug": "srdp",
-      "variants": ["forge", "fabric"]
+      "variants": ["forge", "fabric", "neoforge"]
     },
     {
       "type": "identity",
-      "name": "Modrinth",
+      "name": "CurseForge",
       "id": "334853",
       "slug": "simple-discord-rich-presence",
-      "variants": ["forge", "fabric"]
+      "variants": ["forge", "fabric", "neoforge"]
     },
     {
       "type": "url",
       "name": "GitHub",
       "url": "https://github.com/nanite/simple-discord-rich-presence",
-      "variants": ["forge", "fabric", "common"]
+      "variants": ["forge", "fabric", "neoforge", "common"]
     }
-  ]
+  ],
+  "authors": [
+    {
+      "name": "Sunekaer",
+      "role": "Owner"
+    },
+    {
+      "name": "ErrorMikey",
+      "role": "Contributor"
+    }
+  ] 
 }
