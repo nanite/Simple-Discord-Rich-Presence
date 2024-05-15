@@ -111,11 +111,39 @@ We omit the `modid` from the dimension name and use the `name` instead. So `mine
 }
 ```
 
+### Config Buttons (6.0.2+)
+
+Buttons can be added by adding the following to the mods config file. 
+
+**Restrictions**
+- You can have up to 2 buttons. 
+- Each button can have a label up to 32 characters long.
+
+If you do not want to have buttons, you can leave the buttons array empty.
+
+```json5
+{
+  "...": "See above", // See above
+  "buttons": [
+    {
+      "label": "Google",
+      "url": "https://www.google.com"
+    },
+    {
+      "label": "Yahoo",
+      "url": "https://www.yahoo.com"
+    }
+  ]
+}
+```
+
 ## KubeJS Integration
 
 > **Note!**
 > 
-> KubeJS Support is only support in 3.0.0+ for `1.19.2` and `4.0.3+` for `1.20.1+`
+> KubeJS Support is only support in 3.0.0+ for `1.19.2` and `4.0.3+` for `1.20.1+`.
+> 
+> KubeJS no longer supports Forge or Fabric so support for KubeJS as of `1.20.4+` is limited to just the `NeoForge` version of our mod
 > 
 > Only `KubeJS 6+` is supported!
 
