@@ -24,11 +24,23 @@ public class State {
     }
 
     public RichPresence createPresence() {
-        return new RichPresence.Builder()
+        ExtendedRichPresence.ExtendedBuilder presence = new ExtendedRichPresence.ExtendedBuilder()
                 .setState(I18n.get(message))
                 .setStartTimestamp(SDRP.START_TIME)
                 .setLargeImage("logo", I18n.get("sdrp.logo"))
-                .setSmallImage(imageKey, I18n.get(imageName))
-                .build();
+                .setSmallImage(imageKey, I18n.get(imageName));
+
+        if (!SDRP.config.buttons.isEmpty()) {
+            var buttonOne = SDRP.config.buttons.get(0);
+            presence.setButton1(buttonOne.label, buttonOne.url);
+
+            if (SDRP.config.buttons.size() > 1) {
+                var buttonTwo = SDRP.config.buttons.get(1);
+                presence.setButton2(buttonTwo.label, buttonTwo.url);
+            }
+        }
+
+        return presence.build();
     }
+
 }

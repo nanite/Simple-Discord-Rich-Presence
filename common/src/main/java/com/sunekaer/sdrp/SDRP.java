@@ -5,7 +5,6 @@ import com.mojang.realmsclient.RealmsMainScreen;
 import com.sunekaer.sdrp.config.SDRPConfig;
 import com.sunekaer.sdrp.discord.RPClient;
 import com.sunekaer.sdrp.discord.State;
-//import com.sunekaer.sdrp.integration.kubejs.SDRPKubeJSIntegration;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
@@ -43,10 +42,6 @@ public class SDRP {
 
         EntityEvent.ADD.register(SDRP::clientJoinEvent);
         ClientGuiEvent.INIT_POST.register(SDRP::screenEvent);
-
-//        if (Platform.isModLoaded("kubejs")) {
-//            SDRPKubeJSIntegration.setup();
-//        }
     }
 
     /**
