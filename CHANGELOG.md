@@ -1,5 +1,22 @@
-## 6.0.0
+## 86.0.1
 
 ### Changed
 
-- Updated to 1.20.4
+Buttons can be added by adding the following to the mods config file. You can have up to 2 buttons. Each button can have a label up to 32 characters long.
+
+If you do not want to have buttons, you can leave the buttons array empty.
+
+```json
+{
+  "buttons": [
+    {
+      "label": "Google",
+      "url": "https://www.google.com"
+    },
+    {
+      "label": "Yahoo",
+      "url": "https://www.yahoo.com"
+    }
+  ]
+}
+```

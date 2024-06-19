@@ -2,6 +2,7 @@ package com.sunekaer.sdrp.discord;
 
 import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.IPCListener;
+import com.jagrosh.discordipc.entities.Callback;
 import com.jagrosh.discordipc.entities.RichPresence;
 import com.jagrosh.discordipc.entities.User;
 import com.jagrosh.discordipc.entities.pipe.PipeStatus;
@@ -88,7 +89,12 @@ public class RPClient {
             return;
         }
 
-        this.client.sendRichPresence(state);
+        this.client.sendRichPresence(state, new Callback((s) -> {}, (e) -> {
+            if (SDRP.config.logState) {
+                LOGGER.error("Failed to send state to discord: {}\n {}", state.toJson().toString(), e);
+            }
+        }));
+
         if (SDRP.config.logState) {
             LOGGER.info("Sent state to discord: {}", state.toJson().toString());
         }

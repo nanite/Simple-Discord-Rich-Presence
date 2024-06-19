@@ -11,6 +11,8 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Config(name = SDRP.MOD_ID + "-common")
@@ -29,6 +31,9 @@ public class SDRPConfig implements ConfigData {
 
     @Comment("When enabled, the mod will log the current state being sent to Discord")
     public boolean logState = false;
+
+    @Comment("Set custom buttons for the Discord Rich Presences. You can only have 2 buttons, each button has a label and a URL.")
+    public List<Button> buttons = new ArrayList<>();
 
     @Override
     public void validatePostLoad() {
@@ -59,5 +64,10 @@ public class SDRPConfig implements ConfigData {
     public static final class OldConfigEntry<T> {
         private @Nullable T value;
         private String comment;
+    }
+
+    public static final class Button {
+        public String label;
+        public String url;
     }
 }

@@ -11,7 +11,7 @@ jobs:
       !contains(github.event.head_commit.message, '[ciskip]')
     uses: nanite/workflows/.github/workflows/standard-modmuss.yml@v1.1
     with:
-      java-version: 17
+      java-version: 21
       changelog-file: "./CHANGELOG.md"
       release-to-github: false
     secrets:

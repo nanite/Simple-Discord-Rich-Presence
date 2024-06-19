@@ -1,13 +1,13 @@
 pluginManagement {
     repositories {
-        maven { url "https://maven.saps.dev/mirror" }
-        maven { url "https://maven.fabricmc.net/" }
         maven { url "https://maven.architectury.dev/" }
+        maven { url "https://maven.fabricmc.net/" }
         maven { url "https://maven.minecraftforge.net/" }
         gradlePluginPortal()
     }
 }
 
-include("common", "fabric", "forge", "neoforge")
+// forge
+include("common", "fabric", "neoforge")
 
 rootProject.name = "SimpleDiscordRichPresence"

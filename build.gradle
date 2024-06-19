@@ -1,6 +1,6 @@
 plugins {
-    id "architectury-plugin" version "3.4.151"
-    id "dev.architectury.loom" version "1.4.373" apply false
+    id "architectury-plugin" version "3.4-SNAPSHOT"
+    id "dev.architectury.loom" version "1.6-SNAPSHOT" apply false
     id "me.modmuss50.mod-publish-plugin" version "0.4.5"
 }
 
@@ -56,7 +56,7 @@ allprojects {
 
     tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"
-        options.release = 17
+        options.release = 21
     }
 
     java {
@@ -90,11 +90,11 @@ publishMods {
         modLoaders.add("fabric")
     }
 
-    def forgeOptions = publishOptions {
-        file = project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
-        displayName = "[FORGE][${minecraft_version}] ${project.name} ${mod_version}"
-        modLoaders.add("forge")
-    }
+//    def forgeOptions = publishOptions {
+//        file = project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
+//        displayName = "[FORGE][${minecraft_version}] ${project.name} ${mod_version}"
+//        modLoaders.add("forge")
+//    }
 
     def neoforgeOptions = publishOptions {
         file = project.provider { project(":neoforge").tasks.remapJar }.flatMap { it.archiveFile }
@@ -127,15 +127,15 @@ publishMods {
         }
     }
 
-    curseforge("curseforgeForge") {
-        from(curseForgeOptions, forgeOptions)
-        requires {
-            slug = "cloth-config"
-        }
-        requires {
-            slug = "architectury-api"
-        }
-    }
+//    curseforge("curseforgeForge") {
+//        from(curseForgeOptions, forgeOptions)
+//        requires {
+//            slug = "cloth-config"
+//        }
+//        requires {
+//            slug = "architectury-api"
+//        }
+//    }
 
     curseforge("curseforgeNeoforge") {
         from(curseForgeOptions, neoforgeOptions)
@@ -162,15 +162,15 @@ publishMods {
             }
         }
 
-        modrinth("modrinthForge") {
-            from(modrinthOptions, forgeOptions)
-            requires {
-                slug = "cloth-config"
-            }
-            requires {
-                slug = "architectury-api"
-            }
-        }
+//        modrinth("modrinthForge") {
+//            from(modrinthOptions, forgeOptions)
+//            requires {
+//                slug = "cloth-config"
+//            }
+//            requires {
+//                slug = "architectury-api"
+//            }
+//        }
 
         modrinth("modrinthNeoforge") {
             from(modrinthOptions, neoforgeOptions)
