@@ -38,8 +38,8 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 
-//    modImplementation "dev.latvian.mods:kubejs-forge:${rootProject.kubejs_version}"
-//    modImplementation "dev.latvian.mods:rhino-forge:${rootProject.rhino_version}"
+    modImplementation "dev.latvian.mods:kubejs-neoforge:${rootProject.kubejs_version}"
+    modImplementation "dev.latvian.mods:rhino:${rootProject.rhino_version}"
 }
 
 processResources {
