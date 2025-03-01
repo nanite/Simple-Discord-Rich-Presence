@@ -58,9 +58,7 @@ public class RPClient {
             public void onReady(IPCClient client, User user) {
                 LOGGER.info("Discord client ready");
 
-                if (State.PRESETS.containsKey("loading")) {
-                    setState(State.PRESETS.get("loading").createPresence());
-                }
+                setState(State.LOADING_STATE.createPresence());
             }
         });
 

@@ -8,19 +8,16 @@ import net.minecraft.client.resources.language.I18n;
 import java.util.Map;
 
 public class State {
-    public static final Map<String, State> PRESETS = ImmutableMap.of(
-            "loading", new State("Starting Minecraft", "Starting Minecraft", "loading"),
-            "menu", new State("sdrp.mainmenu", "sdrp.mainmenu", "menu")
-    );
+    public static final State LOADING_STATE = new State("Starting Minecraft", "Starting Minecraft", "loading");
 
     public String message;
     public String imageName;
     public String imageKey;
 
-    public State(String m, String n, String k) {
-        message = m;
-        imageName = n;
-        imageKey = k;
+    public State(String message, String imageName, String imageKey) {
+        this.message = message;
+        this.imageName = imageName;
+        this.imageKey = imageKey;
     }
 
     public RichPresence createPresence() {

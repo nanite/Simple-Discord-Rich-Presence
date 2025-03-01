@@ -12,8 +12,5 @@ public class SDRPNeoForge {
         }
 
         SDRP.init();
-//        if (Platform.isModLoaded("kubejs")) {
-//            SDRPKubeJSIntegration.setup();
-//        }
     }
 }

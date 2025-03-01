@@ -1,7 +1,9 @@
+import groovy.json.JsonSlurper
+
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "1.6-SNAPSHOT" apply false
-    id "me.modmuss50.mod-publish-plugin" version "0.4.5"
+    id "dev.architectury.loom" version "1.7-SNAPSHOT" apply false
+    id "me.modmuss50.mod-publish-plugin" version "0.8.3"
 }
 
 architectury {
@@ -29,28 +31,24 @@ allprojects {
     def ENV = System.getenv()
 
     archivesBaseName = rootProject.archives_base_name
-    version = "${mod_version}-build.${ENV.GITHUB_RUN_NUMBER ?: 9999}+mc${minecraft_version}"
+    version = "${mod_version}+mc${minecraft_version}"
     group = rootProject.maven_group
 
     repositories {
         maven {
-            url "https://maven.saps.dev/releases"
+            url "https://maven.ftb.dev/releases"
             content {
                 includeGroup "dev.ftb.mods"
-                includeGroup "dev.latvian.mods"
             }
         }
-        maven { url "https://maven.saps.dev/mirror" }
-        maven { url 'https://jitpack.io'
+        maven {
+            url 'https://jitpack.io'
             content {
                 includeGroup "com.github.jagrosh"
             }
         }
         maven {
-            url "https://maven.blamejared.com"
-            content {
-                includeGroup "com.faux.ingredientextension"
-            }
+            url 'https://maven.neoforged.net/releases'
         }
     }
 
@@ -90,12 +88,6 @@ publishMods {
         modLoaders.add("fabric")
     }
 
-//    def forgeOptions = publishOptions {
-//        file = project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
-//        displayName = "[FORGE][${minecraft_version}] ${project.name} ${mod_version}"
-//        modLoaders.add("forge")
-//    }
-
     def neoforgeOptions = publishOptions {
         file = project.provider { project(":neoforge").tasks.remapJar }.flatMap { it.archiveFile }
         displayName = "[NEOFORGE][${minecraft_version}] ${project.name} ${mod_version}"
@@ -127,16 +119,6 @@ publishMods {
         }
     }
 
-//    curseforge("curseforgeForge") {
-//        from(curseForgeOptions, forgeOptions)
-//        requires {
-//            slug = "cloth-config"
-//        }
-//        requires {
-//            slug = "architectury-api"
-//        }
-//    }
-
     curseforge("curseforgeNeoforge") {
         from(curseForgeOptions, neoforgeOptions)
         requires {
@@ -162,16 +144,6 @@ publishMods {
             }
         }
 
-//        modrinth("modrinthForge") {
-//            from(modrinthOptions, forgeOptions)
-//            requires {
-//                slug = "cloth-config"
-//            }
-//            requires {
-//                slug = "architectury-api"
-//            }
-//        }
-
         modrinth("modrinthNeoforge") {
             from(modrinthOptions, neoforgeOptions)
             requires {
@@ -181,5 +153,34 @@ publishMods {
                 slug = "architectury-api"
             }
         }
+    }
+}
+
+
+tasks.register("getMinecraftIncrementalId") {
+    group = "other"
+
+    doLast {
+        // Load the versions data
+        def url = "https://launchermeta.mojang.com/mc/game/version_manifest_v2.json"
+        def json = new JsonSlurper().parseText(url.toURL().text)
+        def versions = json.versions
+
+        // Reverse the list so the oldest version is first
+        versions = versions.reverse()
+
+        def currentNumber = 0;
+        for (version in versions) {
+            if (version.type != "release") {
+                continue
+            }
+
+            currentNumber++
+            if (version.id == rootProject.minecraft_version) {
+                break
+            }
+        }
+
+        println("Minecraft incremental ID: ${currentNumber}")
     }
 }

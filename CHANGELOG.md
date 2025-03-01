@@ -1,5 +1,9 @@
-## 87.0.1
+## 91.0.0
 
 ### Added
 
-- Added KubeJS Support back to the NeoForge version
+- Ported to 1.21.4
+
+### Changed
+
+- Removed KubeJS support in preference for configs.

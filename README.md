@@ -35,7 +35,6 @@ We always will attempt to use an image called `loading` and an image called `men
 - `menu` When the main menu is showing
 - `loading` When the game is loading
 
-
 ## Using custom images
 
 If you are not using the KubeJS integration then you will need to follow the our convention for naming images and language keys. The convention is as follows:
@@ -135,64 +134,4 @@ If you do not want to have buttons, you can leave the buttons array empty.
     }
   ]
 }
-```
-
-## KubeJS Integration
-
-> **Note!**
-> 
-> KubeJS Support is only support in 3.0.0+ for `1.19.2` and `4.0.3+` for `1.20.1+`.
-> 
-> KubeJS no longer supports Forge or Fabric so support for KubeJS as of `1.20.4+` is limited to just the `NeoForge` version of our mod
-> 
-> Only `KubeJS 6+` is supported!
-
-Via KubeJS we expose the following methods:
-
-- `SDRP.setState( String message, String imageName, String imageKey )`
-  - `message`: message to show under the packname aka "In Overworld" or "In Nether", can be passed a string with the text to show or a lang key. 
-  - `imageName`: the text to show when hovering over the small image aka "Overworld" or "Nether", can be passed a string with the text to show or a lang key.
-  - `imageKey` : the name Rich Present Art Asset to show, like loading, overworld, menu and so on.
-
-- `SDRP.getCurrentState()`
-  - Gets the current state the client is set to.
-
-### 3.0.6+ and 4.0.3+
-
-In 3.0.6+ and 4.0.3+ we expose a couple of new events to help with some KubeJS weirdness as well as the above methods.
-
-`kubejs/startup_script/sdrp.js`
-
-```js
-sdrp.dimension_change((event) => {
-  const dimPath = event.level.dimension().location().getPath();
-  event.updateSDRPState(`sdrp.${dimPath}.in`, `sdrp.${dimPath}`, "dimPath");
-});
-```
-
-*File path for illustration purposes only, you can put this file anywhere in the `kubejs` folder.*
-
-The `event` object has the following properties:
-
-- `dimensionType`: The dimension the player is in
-- `player`: The player object
-- `level`: The level object
-
-#### Without our events
-
-Example of how to change the state when a player joins a world.
-
-`kubejs/startup_script/sdrp.js`
-
-```js
-// KubeJS 6+
-// This might be the wrong event class for 1.20+, I didn't check
-ForgeEvents.onEvent('net.minecraftforge.event.entity.EntityJoinWorldEvent', event => {
-  if (event.getEntity().type === "entity.minecraft.player") {
-    if (event.getWorld().isClientSide()) {
-      const dimPath = event.getWorld().dimension().location().getPath();
-      SDRP.setState(`sdrp.${dimPath}.in`, `sdrp.${dimPath}`, "dimPath");
-    }
-  }
-})
 ```
