@@ -18,15 +18,11 @@ dependencies {
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
-    implementation('com.github.jagrosh:DiscordIPC:a8d6631cc9')
-    shadowCommon('com.github.jagrosh:DiscordIPC:a8d6631cc9')
+    implementation("dev.nanite.forks:discord-ipc:${ipc_version}")
+    shadowCommon("dev.nanite.forks:discord-ipc:${ipc_version}")
 
     modApi("me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}")
-
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
-
-//    modImplementation "dev.latvian.mods:kubejs:${rootProject.kubejs_version}"
-//    modImplementation "dev.latvian.mods:rhino:${rootProject.rhino_version}"
 }
 
 def ENV = System.getenv()
