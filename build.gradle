@@ -28,7 +28,7 @@ allprojects {
 
     def ENV = System.getenv()
 
-    archivesBaseName = rootProject.archives_base_name
+    archivesBaseName = rootProject.archives_base_name + "-" + project.name
     version = "${mod_version}-build.${ENV.GITHUB_RUN_NUMBER ?: 9999}+mc${minecraft_version}"
     group = rootProject.maven_group
 
@@ -176,5 +176,33 @@ publishMods {
                 slug = "architectury-api"
             }
         }
+    }
+}
+
+tasks.register("getMinecraftIncrementalId") {
+    group = "other"
+
+    doLast {
+        // Load the versions data
+        def url = "https://launchermeta.mojang.com/mc/game/version_manifest_v2.json"
+        def json = new groovy.json.JsonSlurper().parseText(url.toURL().text)
+        def versions = json.versions
+
+        // Reverse the list so the oldest version is first
+        versions = versions.reverse()
+
+        def currentNumber = 0;
+        for (version in versions) {
+            if (version.type != "release") {
+                continue
+            }
+
+            currentNumber++
+            if (version.id == rootProject.minecraft_version) {
+                break
+            }
+        }
+
+        println("Minecraft incremental ID: ${currentNumber}")
     }
 }
