@@ -1,25 +1,21 @@
 package com.sunekaer.sdrp;
 
 import com.jagrosh.discordipc.entities.pipe.PipeStatus;
-import com.mojang.realmsclient.RealmsMainScreen;
 import com.sunekaer.sdrp.config.SDRPConfig;
 import com.sunekaer.sdrp.discord.RPClient;
-import com.sunekaer.sdrp.discord.State;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.hooks.client.screen.ScreenAccess;
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
+import me.shedaniel.autoconfig.ConfigHolder;
+import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
-import net.minecraft.client.gui.screens.worldselection.SelectWorldScreen;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.time.OffsetDateTime;
@@ -32,8 +28,8 @@ public class SDRP {
     public static SDRPConfig config;
 
     public static void init() {
-        AutoConfig.register(SDRPConfig.class, GsonConfigSerializer::new);
-        config = AutoConfig.getConfigHolder(SDRPConfig.class).getConfig();
+        ConfigHolder<SDRPConfig> register = AutoConfig.register(SDRPConfig.class, JanksonConfigSerializer::new);
+        config = register.getConfig();
 
         RP_CLIENT = new RPClient();
 
@@ -48,16 +44,27 @@ public class SDRP {
      * When the screen is part of the main menu screens, attempt to update discord about it
      */
     private static void screenEvent(Screen screen, ScreenAccess screenAccess) {
-        if (!config.enabled || !State.PRESETS.containsKey("menu") || !config.screenEvent) {
+        if (!config.enabled || !config.enableUpdateScreenPresence) {
             return;
         }
 
-        if (screen instanceof TitleScreen || screen instanceof JoinMultiplayerScreen || screen instanceof SelectWorldScreen || screen instanceof RealmsMainScreen) {
-            var menuState = State.PRESETS.get("menu").createPresence();
-            var currentState = RP_CLIENT.getCurrentState();
-            if (currentState != menuState) {
-                RP_CLIENT.setState(menuState);
-            }
+        updateScreen(screen);
+    }
+
+    private static void updateScreen(Screen screen) {
+        var screenClassName = screen.getClass().getName();
+        var screenPresence = config.screens.stream()
+                .filter(e -> e.screenClass.contains(screenClassName))
+                .findFirst();
+
+        if (screenPresence.isEmpty()) {
+            return;
+        }
+
+        var state = screenPresence.get().createPresence();
+        var currentState = RP_CLIENT.getCurrentState();
+        if (currentState != state) {
+            RP_CLIENT.setState(state);
         }
     }
 
@@ -65,13 +72,13 @@ public class SDRP {
      * When the client joins, send out a setDim event to discord
      */
     private static EventResult clientJoinEvent(Entity entity, Level level) {
-        if (!config.enabled || !config.clientJoinEvent) {
+        if (!config.enabled || !config.enableUpdateDimensionPresence) {
             return EventResult.pass();
         }
 
         if (entity instanceof AbstractClientPlayer) {
             if (entity.getUUID().equals(Minecraft.getInstance().player.getUUID())){
-                setDimension(level);
+                setDimension(level, (Player) entity);
             }
         }
 
@@ -81,16 +88,15 @@ public class SDRP {
     /**
      * Dynamically create an entry on a dimension change
      */
-    public static void setDimension(Level level) {
-        State dim = State.PRESETS.get(level.dimension().toString());
-        if (dim != null) {
-            RP_CLIENT.setState(dim.createPresence());
-        } else {
-            String name = I18n.get("sdrp." + level.dimension().location().getPath());
-            String in = I18n.get("sdrp." + level.dimension().location().getPath() + ".in");
-            String key = level.dimension().location().getPath();
+    public static void setDimension(Level level, Player player) {
+        var dimensionName = level.dimension().location().toString();
 
-            RP_CLIENT.setState(new State(in,  name, key).createPresence());
+        for (var entry : config.dimensionsSupport) {
+            if (entry.matches(dimensionName)) {
+                var state = entry.createPresence(level.dimension().location(), player);
+                RP_CLIENT.setState(state);
+                return;
+            }
         }
     }
 
@@ -102,11 +108,7 @@ public class SDRP {
             RPClient.EXECUTOR_SERVICE.shutdown();
         }
 
-        if (RP_CLIENT == null
-                || RP_CLIENT.getClient() == null
-                || RP_CLIENT.getClient().getStatus() != PipeStatus.CLOSED
-                || RP_CLIENT.getClient().getStatus() != PipeStatus.DISCONNECTED
-        ) {
+        if (RP_CLIENT == null || RP_CLIENT.getClient() == null || RP_CLIENT.getClient().getStatus() != PipeStatus.CONNECTED) {
             return;
         }
 

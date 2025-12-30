@@ -1,7 +1,7 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "1.6-SNAPSHOT" apply false
-    id "me.modmuss50.mod-publish-plugin" version "0.4.5"
+    id "dev.architectury.loom" version "1.13-SNAPSHOT" apply false
+    id "me.modmuss50.mod-publish-plugin" version "1.1.0"
 }
 
 architectury {
@@ -28,19 +28,40 @@ allprojects {
 
     def ENV = System.getenv()
 
-    archivesBaseName = rootProject.archives_base_name
+    archivesBaseName = rootProject.archives_base_name + "-" + project.name
     version = "${mod_version}-build.${ENV.GITHUB_RUN_NUMBER ?: 9999}+mc${minecraft_version}"
     group = rootProject.maven_group
 
     repositories {
+        mavenLocal()
         maven {
-            url "https://maven.saps.dev/releases"
+            url = "https://maven.neoforged.net/releases"
+        }
+        maven {
+            url = "https://jitpack.io"
             content {
-                includeGroup "dev.ftb.mods"
-                includeGroup "dev.latvian.mods"
+                includeGroup "com.github.rtyley"
             }
         }
-        maven { url "https://maven.saps.dev/mirror" }
+        maven {
+            url = "https://maven.architectury.dev/"
+            content {
+                includeGroup "dev.architectury"
+            }
+        }
+        maven {
+            url = "https://maven.latvian.dev/releases"
+            content {
+                includeGroup "dev.latvian.mods"
+                includeGroup "dev.latvian.apps"
+            }
+        }
+        maven {
+            url "https://maven.nanite.dev/releases"
+            content {
+                includeGroup "dev.nanite.forks"
+            }
+        }
         maven { url 'https://jitpack.io'
             content {
                 includeGroup "com.github.jagrosh"
@@ -61,6 +82,32 @@ allprojects {
 
     java {
         withSourcesJar()
+    }
+
+    processResources {
+        // Patch in vars for fabric.mod.json, neoforge.mods.toml, etc.
+        def map = [
+            version: project.version,
+            minecraft_version: project.minecraft_version,
+            minecraft_version_sem_range: project.minecraft_version_sem_range,
+            minecraft_version_mav_range: project.minecraft_version_mav_range,
+            architectury_version: project.architectury_version,
+            architectury_version_sem_range: project.architectury_version_sem_range,
+            architectury_version_mav_range: project.architectury_version_mav_range,
+            fabric_loader_version: project.fabric_loader_version,
+            fabric_api_version: project.fabric_api_version,
+            neoforge_version: project.neoforge_version,
+            neoforge_version_range: project.neoforge_version_range,
+            kubejs_version: project.kubejs_version,
+            cloth_config_version: project.cloth_config_version,
+            cloth_config_version_sem_range: project.cloth_config_version_sem_range,
+            cloth_config_version_mav_range: project.cloth_config_version_mav_range,
+        ]
+
+        inputs.properties(map)
+        filesMatching(["fabric.mod.json", "META-INF/neoforge.mods.toml"]) {
+            expand(map)
+        }
     }
 
     publishing {
@@ -90,12 +137,6 @@ publishMods {
         modLoaders.add("fabric")
     }
 
-//    def forgeOptions = publishOptions {
-//        file = project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
-//        displayName = "[FORGE][${minecraft_version}] ${project.name} ${mod_version}"
-//        modLoaders.add("forge")
-//    }
-
     def neoforgeOptions = publishOptions {
         file = project.provider { project(":neoforge").tasks.remapJar }.flatMap { it.archiveFile }
         displayName = "[NEOFORGE][${minecraft_version}] ${project.name} ${mod_version}"
@@ -106,12 +147,26 @@ publishMods {
         accessToken = providers.environmentVariable("CURSE_TOKEN")
         projectId = "${curseforge_id}"
         minecraftVersions.add("${minecraft_version}")
+        minecraftVersions.add("1.21.2")
+        minecraftVersions.add("1.21.3")
+        minecraftVersions.add("1.21.4")
+        minecraftVersions.add("1.21.5")
+        minecraftVersions.add("1.21.6")
+        minecraftVersions.add("1.21.7")
+        minecraftVersions.add("1.21.8")
     }
 
     def modrinthOptions = modrinthOptions {
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
         projectId = "${modrinth_id}"
         minecraftVersions.add("${minecraft_version}")
+        minecraftVersions.add("1.21.2")
+        minecraftVersions.add("1.21.3")
+        minecraftVersions.add("1.21.4")
+        minecraftVersions.add("1.21.5")
+        minecraftVersions.add("1.21.6")
+        minecraftVersions.add("1.21.7")
+        minecraftVersions.add("1.21.8")
     }
 
     curseforge("curseforgeFabric") {
@@ -126,16 +181,6 @@ publishMods {
             slug = "architectury-api"
         }
     }
-
-//    curseforge("curseforgeForge") {
-//        from(curseForgeOptions, forgeOptions)
-//        requires {
-//            slug = "cloth-config"
-//        }
-//        requires {
-//            slug = "architectury-api"
-//        }
-//    }
 
     curseforge("curseforgeNeoforge") {
         from(curseForgeOptions, neoforgeOptions)
@@ -162,16 +207,6 @@ publishMods {
             }
         }
 
-//        modrinth("modrinthForge") {
-//            from(modrinthOptions, forgeOptions)
-//            requires {
-//                slug = "cloth-config"
-//            }
-//            requires {
-//                slug = "architectury-api"
-//            }
-//        }
-
         modrinth("modrinthNeoforge") {
             from(modrinthOptions, neoforgeOptions)
             requires {
@@ -181,5 +216,33 @@ publishMods {
                 slug = "architectury-api"
             }
         }
+    }
+}
+
+tasks.register("getMinecraftIncrementalId") {
+    group = "other"
+
+    doLast {
+        // Load the versions data
+        def url = "https://launchermeta.mojang.com/mc/game/version_manifest_v2.json"
+        def json = new groovy.json.JsonSlurper().parseText(url.toURL().text)
+        def versions = json.versions
+
+        // Reverse the list so the oldest version is first
+        versions = versions.reverse()
+
+        def currentNumber = 0;
+        for (version in versions) {
+            if (version.type != "release") {
+                continue
+            }
+
+            currentNumber++
+            if (version.id == rootProject.minecraft_version) {
+                break
+            }
+        }
+
+        println("Minecraft incremental ID: ${currentNumber}")
     }
 }

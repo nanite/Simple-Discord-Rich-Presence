@@ -9,7 +9,7 @@ architectury {
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
-    }
+}
 
 configurations {
     common
@@ -19,6 +19,14 @@ configurations {
     developmentNeoForge.extendsFrom common
 }
 
+repositories {
+    maven {
+        url = "https://cursemaven.com/"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
 
 dependencies {
     neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
@@ -27,19 +35,20 @@ dependencies {
 
     modApi("me.shedaniel.cloth:cloth-config-neoforge:${rootProject.cloth_config_version}")
 
-    implementation 'com.github.jagrosh:DiscordIPC:a8d6631cc9'
-    forgeRuntimeLibrary 'com.github.jagrosh:DiscordIPC:a8d6631cc9'
-
-    include(implementation 'com.github.jagrosh:DiscordIPC:a8d6631cc9')
-    include(implementation "com.kohlschutter.junixsocket:junixsocket-common:2.6.2")
-    include(implementation "com.kohlschutter.junixsocket:junixsocket-native-common:2.6.2")
-    include(implementation "org.json:json:20210307")
+    forgeRuntimeLibrary "dev.nanite.forks:discord-ipc:${ipc_version}"
+    implementation "dev.nanite.forks:discord-ipc:${ipc_version}"
+    include(implementation "dev.nanite.forks:discord-ipc:${ipc_version}")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 
-    modImplementation "dev.latvian.mods:kubejs-neoforge:${rootProject.kubejs_version}"
-    modImplementation "dev.latvian.mods:rhino:${rootProject.rhino_version}"
+    // This was painful.
+    modImplementation("dev.latvian.mods:kubejs-neoforge:$kubejs_version") {
+        exclude group: "dev.latvian.apps", module: "tiny-java-server"
+    }
+
+    forgeRuntimeLibrary "dev.latvian.apps:tiny-java-server:1.0.0-build.33"
+    implementation "dev.latvian.apps:tiny-java-server:1.0.0-build.33"
 }
 
 processResources {
@@ -61,7 +70,6 @@ shadowJar {
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    archiveBaseName.set "${rootProject.archives_base_name}-${project.name}"
     setArchiveClassifier(null)
 }
 

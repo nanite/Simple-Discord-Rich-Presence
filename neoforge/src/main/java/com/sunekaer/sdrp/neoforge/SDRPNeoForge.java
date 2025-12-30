@@ -1,6 +1,8 @@
 package com.sunekaer.sdrp.neoforge;
 
 import com.sunekaer.sdrp.SDRP;
+import com.sunekaer.sdrp.neoforge.kubejs.SDRPKubeJSIntegration;
+import dev.architectury.platform.Platform;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
 
@@ -12,8 +14,8 @@ public class SDRPNeoForge {
         }
 
         SDRP.init();
-//        if (Platform.isModLoaded("kubejs")) {
-//            SDRPKubeJSIntegration.setup();
-//        }
+        if (Platform.isModLoaded("kubejs")) {
+            SDRPKubeJSIntegration.setup();
+        }
     }
 }
