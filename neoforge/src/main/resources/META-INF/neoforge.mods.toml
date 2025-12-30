@@ -18,7 +18,7 @@ Simple Discord Rich Presence
 [[dependencies.sdrp]]
 modId = "neoforge"
 type = "required"
-versionRange = "${minecraft_version_mav_range}"
+versionRange = "${neoforge_version_range}"
 ordering = "NONE"
 side = "BOTH"
 

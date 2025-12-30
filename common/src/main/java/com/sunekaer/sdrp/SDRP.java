@@ -9,6 +9,7 @@ import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.hooks.client.screen.ScreenAccess;
 import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -27,8 +28,8 @@ public class SDRP {
     public static SDRPConfig config;
 
     public static void init() {
-        AutoConfig.register(SDRPConfig.class, JanksonConfigSerializer::new);
-        config = AutoConfig.getConfigHolder(SDRPConfig.class).getConfig();
+        ConfigHolder<SDRPConfig> register = AutoConfig.register(SDRPConfig.class, JanksonConfigSerializer::new);
+        config = register.getConfig();
 
         RP_CLIENT = new RPClient();
 
