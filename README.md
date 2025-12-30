@@ -9,7 +9,6 @@
 <a href="https://www.curseforge.com/minecraft/mc-mods/architectury-api"><img src="https://cdn.nanite.dev/data/assets/requires-arch.png" height="70" /></a>
 <a href="https://fabricmc.net/"><img src="https://cdn.nanite.dev/data/assets/supports-fabric.png" height="70" /></a>
 <a href="https://neoforged.net"><img src="https://cdn.nanite.dev/data/assets/supports-neoforge.png" height="70" /></a>
-<a href="https://files.minecraftforge.net/net/minecraftforge/forge/"><img src="https://cdn.nanite.dev/data/assets/supports-forge.png" height="70" /></a>
 </p>
 
 ## What is SDRP?
@@ -30,15 +29,69 @@ SDRP is a simple Discord Rich Presence client for Minecraft that allows you to d
 
 ### Caveats
 
+> Versions after `88.0.0` no longer hold the `menu` caveat as this is now controlled via the config.
+
 We always will attempt to use an image called `loading` and an image called `menu` for when the game is loading or is on the main menu respectively. If you do not have these images, the mod will simply fail to display an image for these states.
 
 - `menu` When the main menu is showing
 - `loading` When the game is loading
 
 
-## Using custom images
+## Dimensions presence
 
-If you are not using the KubeJS integration then you will need to follow the our convention for naming images and language keys. The convention is as follows:
+> **Note!**
+> This is no longer correct when using versions newer than `88.0.0`.
+
+### `88.0.0+`
+
+> By default, the overworld, nether and end dimensions are configured out of the box.
+
+Dimensions are now controlled either via KubeJS or via the config. The config has advanced support for dimensions which can be read in more detail as part of the config value `dimensionSupport`'s comment. But, here is a extract for simplicity:
+
+```
+Dimensions can be setup to update the Rich Presence when the player is in them.
+
+Due to the complex nature of modded dimensions, we've added support for different matchers here with 
+support for variable replacement in the various fields.
+
+Note: When comparing, the full dimension identifier is used (e.g. minecraft:overworld, modid:custom_dimension) meaning if you use 
+a startsWith, regex, etc, you need to handle the namespace as well. 
+
+Helper matchers are provided for doing blanket matches on just the namespace or path.
+
+Supported matchers:
+- exact@<string> : Exact match
+- contains@<string> : Contains substring
+- startsWith@<string> : Starts with substring
+- endsWith@<string> : Ends with substring
+- regex@<pattern> : Matches regex pattern (Java regex syntax)
+- namespace@<string> : Matches namespace
+- path@<string> : Matches path
+
+Variables:
+- {{dimension.name}}: The translated dimension name (e.g. dimension.minecraft.overworld = Overworld). This is NeoForge standards, not all mods follow this, nor will all have their own lang keys added. 
+- {{dimension.path}}: The dimension identifier (e.g. overworld) excluding the namespace
+- {{dimension.namespace}}: The dimension namespace (e.g. minecraft, modid)
+- {{dimension.identifier}}: The full dimension identifier (e.g. minecraft:overworld)
+- {{player.uuid}}: The player's UUID
+- {{player.name}}: The player's in-game name
+- Please let us know if there are any other variables you'd like to see added!
+```
+
+**Example**
+```json5
+{
+    "matcher": "exact@minecraft:the_nether",
+    "message": "Having a blast in {{dimension.name}}",
+    "imageName": "{{dimension.name}}",
+    "imageKey": "{{dimension.path}}",
+    "prefixWithIn": false
+}
+```
+
+### Before `88.0.0`
+
+If you are not using the KubeJS integration, or at the time of reading this, the version you're using does not support KubeJS, you will need to add images to your Discord app with the following naming scheme:
 
 - Name: `sdrp.[DIMENSION_NAME]` (Language key)
 - Image Key: `sdrp.[DIMENSION_NAME].in`
@@ -53,65 +106,34 @@ If I wanted to support the end and the overworld for example. Their names are as
   "sdrp.overworld": "Overworld",
   "sdrp.overworld.in": "In the Overworld"
 }
-``` 
-
-## What we support out of the box
-
-### Dimensions
-
-We omit the `modid` from the dimension name and use the `name` instead. So `minecraft:overworld` becomes `overworld`.
-
-- `overworld`
-- `the_nether`
-- `the_end`
-- `compact_world`
-- `dungeon`
-- `spatial_storage`
-- `otherside`
-- `paradise_lost`
-- `mining`
-
-*Not all of these dimensions have example images with-in the images folder*
-
-### Languages
-
-```json
-{
-  "sdrp.logo": "Pack Logo",
-  "sdrp.mainmenu": "Main Menu",
-  "sdrp.overworld.in": "In Overworld",
-  "sdrp.overworld": "Overworld",
-  "sdrp.the_nether.in": "In Nether",
-  "sdrp.the_nether": "Nether",
-  "sdrp.the_end.in": "In The End",
-  "sdrp.the_end": "The End",
-  "sdrp.compact_world.in": "In Compact World",
-  "sdrp.compact_world": "Compact World",
-  "sdrp.dungeon.in": "In Dungeon World",
-  "sdrp.dungeon": "Dungeon World",
-  "sdrp.spatial_storage.in": "In Spatial Storage",
-  "sdrp.spatial_storage": "Spatial Storage",
-  "sdrp.otherside.in": "In Otherside",
-  "sdrp.otherside": "Otherside",
-  "sdrp.paradise_lost.in": "In Paradise Lost",
-  "sdrp.paradise_lost": "Paradise Lost",
-  "sdrp.mining": "Mining Dimension",
-  "sdrp.mining.in": "In Mining dimension"
-}
 ```
-## Config
+
+### Screen presence
+
+When a player is currently on a specific screen, you can define a message, image name and image key for that menu. We support targeting multiple screens per entry.
+
+**Example** 
+
+This is our built in main menu presence:
 
 ```json5
 {
-  "clientId": 1000000000,   // Your Discord application ID
-  "enabled": true,          // Whether or not the mod is enabled
-  "screenEvent": false,     // Disables the `menu` and `loading` images
-  "clientJoinEvent": false, // Disables the level join events which will prevent the mod from showing the level you are in
-  "logState": false,        // Enables developer logging of the state json being sent to Discord
+  "screens": [
+    {
+      "screenClass": [
+        "net.minecraft.client.gui.screens.TitleScreen",
+        "net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen",
+        "net.minecraft.client.gui.screens.worldselection.SelectWorldScreen"
+      ],
+      "message": "sdrp.mainmenu",
+      "imageName": "sdrp.mainmenu",
+      "imageKey": "menu"
+    }
+  ]
 }
 ```
 
-### Config Buttons (6.0.2+)
+### Buttons (6.0.2+)
 
 Buttons can be added by adding the following to the mods config file. 
 
