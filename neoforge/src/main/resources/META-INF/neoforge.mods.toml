@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[4,)"
-issueTrackerURL="https://github.com/Sunekaer/Simple-Discord-Rich-Presence/issues"
+issueTrackerURL="https://github.com/nanite/Simple-Discord-Rich-Presence/issues"
 license="All Rights Reserved"
 
 [[mods]]
@@ -18,27 +18,27 @@ Simple Discord Rich Presence
 [[dependencies.sdrp]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21,)"
+versionRange = "${minecraft_version_mav_range}"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.sdrp]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21,)"
+versionRange = "${minecraft_version_mav_range}"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.sdrp]]
 modId = "architectury"
 type = "required"
-versionRange = "[13.0.1,)"
+versionRange = "${architectury_version_mav_range}"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.sdrp]]
 modId = "cloth_config"
 type = "required"
-versionRange = "[15.0.127,)"
+versionRange = "${cloth_config_version_mav_range}"
 ordering = "NONE"
 side = "BOTH"

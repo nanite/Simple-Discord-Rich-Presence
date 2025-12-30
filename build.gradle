@@ -84,6 +84,32 @@ allprojects {
         withSourcesJar()
     }
 
+    processResources {
+        // Patch in vars for fabric.mod.json, neoforge.mods.toml, etc.
+        def map = [
+            version: project.version,
+            minecraft_version: project.minecraft_version,
+            minecraft_version_sem_range: project.minecraft_version_sem_range,
+            minecraft_version_mav_range: project.minecraft_version_mav_range,
+            architectury_version: project.architectury_version,
+            architectury_version_sem_range: project.architectury_version_sem_range,
+            architectury_version_mav_range: project.architectury_version_mav_range,
+            fabric_loader_version: project.fabric_loader_version,
+            fabric_api_version: project.fabric_api_version,
+            neoforge_version: project.neoforge_version,
+            neoforge_version_range: project.neoforge_version_range,
+            kubejs_version: project.kubejs_version,
+            cloth_config_version: project.cloth_config_version,
+            cloth_config_version_sem_range: project.cloth_config_version_sem_range,
+            cloth_config_version_mav_range: project.cloth_config_version_mav_range,
+        ]
+
+        inputs.properties(map)
+        filesMatching(["fabric.mod.json", "META-INF/neoforge.mods.toml"]) {
+            expand(map)
+        }
+    }
+
     publishing {
         repositories {
             if (ENV.NANITE_TOKEN) {

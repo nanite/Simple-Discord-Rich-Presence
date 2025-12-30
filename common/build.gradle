@@ -18,11 +18,18 @@ dependencies {
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
-    implementation("dev.nanite.forks:discord-ipc:${ipc_version}")
-    shadowCommon("dev.nanite.forks:discord-ipc:${ipc_version}")
+    compileOnly("dev.nanite.forks:discord-ipc:${ipc_version}")
 
     modApi("me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}")
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
+
+    // Unit testing
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 def ENV = System.getenv()

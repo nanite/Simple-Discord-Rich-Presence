@@ -3,19 +3,18 @@ package com.sunekaer.sdrp;
 import com.jagrosh.discordipc.entities.pipe.PipeStatus;
 import com.sunekaer.sdrp.config.SDRPConfig;
 import com.sunekaer.sdrp.discord.RPClient;
-import com.sunekaer.sdrp.discord.State;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.hooks.client.screen.ScreenAccess;
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
+import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.time.OffsetDateTime;
@@ -28,7 +27,7 @@ public class SDRP {
     public static SDRPConfig config;
 
     public static void init() {
-        AutoConfig.register(SDRPConfig.class, GsonConfigSerializer::new);
+        AutoConfig.register(SDRPConfig.class, JanksonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(SDRPConfig.class).getConfig();
 
         RP_CLIENT = new RPClient();
@@ -50,7 +49,6 @@ public class SDRP {
 
         updateScreen(screen);
     }
-
 
     private static void updateScreen(Screen screen) {
         var screenClassName = screen.getClass().getName();
@@ -79,7 +77,7 @@ public class SDRP {
 
         if (entity instanceof AbstractClientPlayer) {
             if (entity.getUUID().equals(Minecraft.getInstance().player.getUUID())){
-                setDimension(level);
+                setDimension(level, (Player) entity);
             }
         }
 
@@ -89,20 +87,16 @@ public class SDRP {
     /**
      * Dynamically create an entry on a dimension change
      */
-    public static void setDimension(Level level) {
+    public static void setDimension(Level level, Player player) {
         var dimensionName = level.dimension().location().toString();
-        var isInverted = config.invertWhitelist;
 
-        // Does the whitelist contain the dimension? But invert the check if we're using a blacklist
-        if (config.dimensionsWhitelist.contains(dimensionName) == isInverted) {
-            return;
+        for (var entry : config.dimensionsSupport) {
+            if (entry.matches(dimensionName)) {
+                var state = entry.createPresence(level.dimension().location(), player);
+                RP_CLIENT.setState(state);
+                return;
+            }
         }
-
-        String name = I18n.get("sdrp." + level.dimension().location().getPath());
-        String in = I18n.get("sdrp." + level.dimension().location().getPath() + ".in");
-        String key = level.dimension().location().getPath();
-
-        RP_CLIENT.setState(new State(in,  name, key).createPresence());
     }
 
     /**
