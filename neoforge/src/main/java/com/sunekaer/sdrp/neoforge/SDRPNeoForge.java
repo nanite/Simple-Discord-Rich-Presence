@@ -9,13 +9,13 @@ import net.neoforged.fml.loading.FMLEnvironment;
 @Mod(SDRP.MOD_ID)
 public class SDRPNeoForge {
     public SDRPNeoForge() {
-        if (!FMLEnvironment.dist.isClient()) {
+        if (!FMLEnvironment.getDist().isClient()) {
             return;
         }
 
         SDRP.init();
-        if (Platform.isModLoaded("kubejs")) {
-            SDRPKubeJSIntegration.setup();
-        }
+//        if (Platform.isModLoaded("kubejs")) {
+//            SDRPKubeJSIntegration.setup();
+//        }
     }
 }

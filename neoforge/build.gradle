@@ -43,12 +43,12 @@ dependencies {
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 
     // This was painful.
-    modImplementation("dev.latvian.mods:kubejs-neoforge:$kubejs_version") {
+    modCompileOnly("dev.latvian.mods:kubejs-neoforge:$kubejs_version") {
         exclude group: "dev.latvian.apps", module: "tiny-java-server"
     }
 
-    forgeRuntimeLibrary "dev.latvian.apps:tiny-java-server:1.0.0-build.33"
-    implementation "dev.latvian.apps:tiny-java-server:1.0.0-build.33"
+//    forgeRuntimeLibrary "dev.latvian.apps:tiny-java-server:1.0.0-build.33"
+//    implementation "dev.latvian.apps:tiny-java-server:1.0.0-build.33"
 }
 
 processResources {

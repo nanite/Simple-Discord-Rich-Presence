@@ -37,7 +37,7 @@ public class SDRPKubeJSIntegration implements KubeJSPlugin {
             return EventResult.pass();
         }
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             return EventResult.pass();
         }
 
