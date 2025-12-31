@@ -7,7 +7,7 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
@@ -215,18 +215,18 @@ public class SDRPConfig implements ConfigData {
                 case "endsWith" -> compareTo.endsWith(matchValue);
                 case "regex" -> compareTo.matches(matchValue);
                 case "namespace" -> {
-                    ResourceLocation rl = ResourceLocation.tryParse(compareTo);
+                    Identifier rl = Identifier.tryParse(compareTo);
                     yield rl != null && rl.getNamespace().equals(matchValue);
                 }
                 case "path" -> {
-                    ResourceLocation rl = ResourceLocation.tryParse(compareTo);
+                    Identifier rl = Identifier.tryParse(compareTo);
                     yield rl != null && rl.getPath().equals(matchValue);
                 }
                 default -> false;
             };
         }
 
-        public RichPresence createPresence(ResourceLocation dimensionName, Player player) {
+        public RichPresence createPresence(Identifier dimensionName, Player player) {
             var msg = processVariables(message, dimensionName, player);
             if (prefixWithIn) {
                 // If we prefix, we need to translate here, then pass it down into the msg. This will try and translate again and fail, but we'll already have the correct string.
@@ -240,7 +240,7 @@ public class SDRPConfig implements ConfigData {
             ).createPresence();
         }
 
-        public static String processVariables(String template, ResourceLocation dimensionName, Player player) {
+        public static String processVariables(String template, Identifier dimensionName, Player player) {
             return template
                     .replace("{{dimension.name}}", I18n.get(dimensionName.toLanguageKey("dimension")))
                     .replace("{{dimension.identifier}}", dimensionName.toString())

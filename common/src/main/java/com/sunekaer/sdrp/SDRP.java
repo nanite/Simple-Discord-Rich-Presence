@@ -89,11 +89,11 @@ public class SDRP {
      * Dynamically create an entry on a dimension change
      */
     public static void setDimension(Level level, Player player) {
-        var dimensionName = level.dimension().location().toString();
+        var dimensionName = level.dimension().identifier().toString();
 
         for (var entry : config.dimensionsSupport) {
             if (entry.matches(dimensionName)) {
-                var state = entry.createPresence(level.dimension().location(), player);
+                var state = entry.createPresence(level.dimension().identifier(), player);
                 RP_CLIENT.setState(state);
                 return;
             }
