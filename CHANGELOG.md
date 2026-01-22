@@ -1,6 +1,5 @@
-## 98.0.0
+## 98.0.1
 
-### Changed
+### Fixed
 
-- Ported to MC 1.12.11
-- Disabled KubeJS support for a while until it's updated to support newer MC versions.
+- The discord RPC should now shutdown properly when exiting the game.
