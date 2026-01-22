@@ -1,11 +1,9 @@
 package com.sunekaer.sdrp;
 
-import com.jagrosh.discordipc.entities.pipe.PipeStatus;
 import com.sunekaer.sdrp.config.SDRPConfig;
 import com.sunekaer.sdrp.discord.RPClient;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
-import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.hooks.client.screen.ScreenAccess;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -32,9 +30,6 @@ public class SDRP {
         config = register.getConfig();
 
         RP_CLIENT = new RPClient();
-
-        ClientLifecycleEvent.CLIENT_STOPPING.register((minecraft) -> shutdownDiscordClient());
-        Runtime.getRuntime().addShutdownHook(new Thread(SDRP::shutdownDiscordClient));
 
         EntityEvent.ADD.register(SDRP::clientJoinEvent);
         ClientGuiEvent.INIT_POST.register(SDRP::screenEvent);
@@ -98,20 +93,5 @@ public class SDRP {
                 return;
             }
         }
-    }
-
-    /**
-     * Shutdown various threads
-     */
-    private static void shutdownDiscordClient() {
-        if (!RPClient.EXECUTOR_SERVICE.isShutdown()) {
-            RPClient.EXECUTOR_SERVICE.shutdown();
-        }
-
-        if (RP_CLIENT == null || RP_CLIENT.getClient() == null || RP_CLIENT.getClient().getStatus() != PipeStatus.CONNECTED) {
-            return;
-        }
-
-        RP_CLIENT.getClient().close();
     }
 }

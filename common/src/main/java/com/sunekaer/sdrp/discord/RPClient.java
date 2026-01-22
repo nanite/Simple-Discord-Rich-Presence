@@ -24,7 +24,13 @@ import java.util.concurrent.TimeUnit;
  */
 public class RPClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(RPClient.class);
-    public static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor();
+    public static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor(factory -> {
+        // Make sure we close with the game
+        Thread thread = new Thread(factory);
+        thread.setName("SDRP-Discord-RPC-Thread");
+        thread.setDaemon(true);
+        return thread;
+    });
 
     private IPCClient client = null;
     private RichPresence currentState = null;
