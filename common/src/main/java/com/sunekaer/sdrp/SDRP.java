@@ -2,10 +2,6 @@ package com.sunekaer.sdrp;
 
 import com.sunekaer.sdrp.config.SDRPConfig;
 import com.sunekaer.sdrp.discord.RPClient;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientGuiEvent;
-import dev.architectury.event.events.common.EntityEvent;
-import dev.architectury.hooks.client.screen.ScreenAccess;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
@@ -30,15 +26,12 @@ public class SDRP {
         config = register.getConfig();
 
         RP_CLIENT = new RPClient();
-
-        EntityEvent.ADD.register(SDRP::clientJoinEvent);
-        ClientGuiEvent.INIT_POST.register(SDRP::screenEvent);
     }
 
     /**
-     * When the screen is part of the main menu screens, attempt to update discord about it
+     * Called by platform event handlers when a screen is initialized.
      */
-    private static void screenEvent(Screen screen, ScreenAccess screenAccess) {
+    public static void onScreenInit(Screen screen) {
         if (!config.enabled || !config.enableUpdateScreenPresence) {
             return;
         }
@@ -64,11 +57,11 @@ public class SDRP {
     }
 
     /**
-     * When the client joins, send out a setDim event to discord
+     * Called by platform event handlers when an entity is added to a level.
      */
-    private static EventResult clientJoinEvent(Entity entity, Level level) {
+    public static void onClientJoin(Entity entity, Level level) {
         if (!config.enabled || !config.enableUpdateDimensionPresence) {
-            return EventResult.pass();
+            return;
         }
 
         if (entity instanceof AbstractClientPlayer) {
@@ -76,8 +69,6 @@ public class SDRP {
                 setDimension(level, (Player) entity);
             }
         }
-
-        return EventResult.pass();
     }
 
     /**

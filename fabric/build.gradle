@@ -1,91 +1,45 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
-}
-
-architectury {
-    platformSetupLoomIde()
-    fabric()
-}
-
-configurations {
-    shadowCommon
+    id 'net.fabricmc.fabric-loom'
 }
 
 loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
-}
+    // accessWidenerPath = project(":common").file("src/main/resources/sdrp.accesswidener")
 
-configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentFabric.extendsFrom common
-}
+    runs {
+        configureEach {
+            ideConfigGenerated = true
+        }
+    }
 
-repositories {
-
+    mods {
+        "sdrp" {
+            sourceSet sourceSets.main
+            sourceSet("main", ":common")
+        }
+    }
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
 
-    modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
+    implementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-    modApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}")
+    implementation "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}"
 
-    include(implementation "dev.nanite.forks:discord-ipc:${ipc_version}")
-
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+    include(implementation("dev.nanite.forks:discord-ipc:${ipc_version}"))
 }
 
-processResources {
-    inputs.property "version", project.version
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
+java {
+    withSourcesJar()
 }
-
-shadowJar {
-    exclude "architectury.common.json"
-
-    configurations = [project.configurations.shadowCommon]
-    setArchiveClassifier("dev-shadow")
-}
-
-remapJar {
-    injectAccessWidener = true
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
-    archiveBaseName.set "${rootProject.archives_base_name}-${project.name}"
-    setArchiveClassifier(null)
-}
-
-jar {
-    setArchiveClassifier("dev")
-}
-
-sourcesJar {
-    def commonSources = project(":common").sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
-}
-
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
-}
-
-def ENV = System.getenv()
 
 publishing {
     publications {
         mavenFabric(MavenPublication) {
-            artifactId = rootProject.archivesBaseName + "-" + project.name
+            groupId project.group
+            artifactId project.base.archivesName.get()
+            version project.version
             from components.java
         }
     }

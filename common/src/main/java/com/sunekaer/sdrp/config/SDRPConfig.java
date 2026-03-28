@@ -241,13 +241,32 @@ public class SDRPConfig implements ConfigData {
         }
 
         public static String processVariables(String template, Identifier dimensionName, Player player) {
+            String langKey = dimensionName.toLanguageKey("dimension");
+            String translated = I18n.get(langKey);
+            if (translated.equals(langKey)) {
+                translated = prettifyName(dimensionName.getPath());
+            }
+
             return template
-                    .replace("{{dimension.name}}", I18n.get(dimensionName.toLanguageKey("dimension")))
+                    .replace("{{dimension.name}}", translated)
                     .replace("{{dimension.identifier}}", dimensionName.toString())
                     .replace("{{dimension.namespace}}", dimensionName.getNamespace())
                     .replace("{{dimension.path}}", dimensionName.getPath())
                     .replace("{{player.uuid}}", player.getUUID().toString())
                     .replace("{{player.name}}", player.getName().getString());
+        }
+
+        private static String prettifyName(String path) {
+            String[] parts = path.split("_");
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < parts.length; i++) {
+                if (i > 0) sb.append(' ');
+                if (!parts[i].isEmpty()) {
+                    sb.append(Character.toUpperCase(parts[i].charAt(0)));
+                    sb.append(parts[i].substring(1));
+                }
+            }
+            return sb.toString();
         }
 
         public String matcher() {

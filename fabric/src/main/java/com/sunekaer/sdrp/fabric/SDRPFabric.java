@@ -1,11 +1,19 @@
 package com.sunekaer.sdrp.fabric;
 
 import com.sunekaer.sdrp.SDRP;
-import net.fabricmc.api.ModInitializer;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 
-public class SDRPFabric implements ModInitializer {
+public class SDRPFabric implements ClientModInitializer {
     @Override
-    public void onInitialize() {
+    public void onInitializeClient() {
         SDRP.init();
+
+        ClientEntityEvents.ENTITY_LOAD.register(SDRP::onClientJoin);
+
+        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            SDRP.onScreenInit(screen);
+        });
     }
 }

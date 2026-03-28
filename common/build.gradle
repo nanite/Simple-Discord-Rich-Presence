@@ -1,27 +1,22 @@
-architectury {
-    common(rootProject.enabled_platforms.split(","))
+plugins {
+    id 'net.fabricmc.fabric-loom'
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/sdrp.accesswidener")
-}
-
-configurations {
-    shadowCommon
+    // accessWidenerPath = file("src/main/resources/sdrp.accesswidener")
 }
 
 repositories {
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
     compileOnly("dev.nanite.forks:discord-ipc:${ipc_version}")
 
-    modApi("me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}")
-    modApi "dev.architectury:architectury:${rootProject.architectury_version}"
+    compileOnly("me.shedaniel.cloth:cloth-config:${project.cloth_config_version}")
 
     // Unit testing
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
@@ -31,15 +26,3 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-
-def ENV = System.getenv()
-
-publishing {
-    publications {
-        mavenCommon(MavenPublication) {
-            artifactId = rootProject.archives_base_name + "-" + project.name
-            from components.java
-        }
-    }
-}
-

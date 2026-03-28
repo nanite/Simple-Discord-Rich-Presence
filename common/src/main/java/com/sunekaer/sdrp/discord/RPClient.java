@@ -4,7 +4,6 @@ import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.IPCListener;
 import com.jagrosh.discordipc.entities.Callback;
 import com.jagrosh.discordipc.entities.RichPresence;
-import com.jagrosh.discordipc.entities.User;
 import com.jagrosh.discordipc.entities.pipe.PipeStatus;
 import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
 import com.sunekaer.sdrp.SDRP;
@@ -45,7 +44,7 @@ public class RPClient {
 
         LOGGER.info("Setting up discord client");
         EXECUTOR_SERVICE.submit(this::connectClient);
-        EXECUTOR_SERVICE.scheduleAtFixedRate(this::processStateQueue, 0, 5, TimeUnit.SECONDS);
+        EXECUTOR_SERVICE.scheduleAtFixedRate(this::processStateQueue, 0, 1, TimeUnit.SECONDS);
         EXECUTOR_SERVICE.scheduleAtFixedRate(this::maintainCorrectState, 1000, 1000 * 120, TimeUnit.MILLISECONDS);
     }
 
@@ -61,7 +60,7 @@ public class RPClient {
 
         this.client = new IPCClient(SDRP.config.clientId);
         this.client.setListener(new IPCListener() {
-            public void onReady(IPCClient client, User user) {
+            public void onReady(IPCClient client) {
                 LOGGER.info("Discord client ready");
 
                 setState(State.LOADING_STATE.createPresence());

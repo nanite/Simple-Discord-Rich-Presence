@@ -1,3 +1,4 @@
+/*
 package com.sunekaer.sdrp.neoforge.kubejs;
 
 import dev.architectury.event.EventResult;
@@ -61,3 +62,4 @@ public class SDRPKubeJSIntegration implements KubeJSPlugin {
         }
     }
 }
+*/

@@ -25,20 +25,13 @@ side = "BOTH"
 [[dependencies.sdrp]]
 modId = "minecraft"
 type = "required"
-versionRange = "${minecraft_version_mav_range}"
+versionRange = "${minecraft_version_range}"
 ordering = "NONE"
-side = "BOTH"
-
-[[dependencies.sdrp]]
-modId = "architectury"
-type = "required"
-versionRange = "${architectury_version_mav_range}"
-ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.sdrp]]
 modId = "cloth_config"
 type = "required"
-versionRange = "${cloth_config_version_mav_range}"
+versionRange = "${cloth_config_version_range}"
 ordering = "NONE"
 side = "BOTH"

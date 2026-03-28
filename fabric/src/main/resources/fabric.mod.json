@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "sdrp",
+  "id": "${mod_id}",
   "version": "${version}",
   "name": "Simple Discord Rich Presence",
   "description": "Simple Discord Rich Presence",
@@ -15,17 +15,13 @@
   "icon": "assets/sdrp/logo.png",
   "environment": "client",
   "entrypoints": {
-    "main": [
+    "client": [
       "com.sunekaer.sdrp.fabric.SDRPFabric"
     ]
   },
-  "mixins": [
-    "sdrp.mixins.json"
-  ],
   "depends": {
-    "fabric": "*",
-    "minecraft": "${minecraft_version_sem_range}",
-    "architectury": "${architectury_version_sem_range}",
-    "cloth-config": "${cloth_config_version_sem_range}"
+    "fabric-api": ">=${fabric_api_version}",
+    "minecraft": ">=${minecraft_version}",
+    "cloth-config": ">=${cloth_config_version}"
   }
 }

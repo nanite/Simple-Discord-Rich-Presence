@@ -1,3 +1,4 @@
+/*
 package com.sunekaer.sdrp.neoforge.kubejs;
 
 import com.jagrosh.discordipc.entities.RichPresence;
@@ -15,3 +16,4 @@ public class SDRPKubeJSWrapper {
         return RP_CLIENT.getCurrentState();
     }
 }
+*/
