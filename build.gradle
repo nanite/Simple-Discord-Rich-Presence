@@ -7,15 +7,13 @@ plugins {
 
 def ENV = System.getenv()
 
-version = "${mod_version}-build.${ENV.GITHUB_RUN_NUMBER ?: 9999}+mc${minecraft_version}"
-group = maven_group
-
 allprojects {
     apply plugin: 'idea'
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
 
-    version = rootProject.version
+    version = "${mod_version}-build.${ENV.GITHUB_RUN_NUMBER ?: 9999}+mc${minecraft_version}"
+    group = maven_group
 
     repositories {
         mavenLocal()
@@ -55,25 +53,11 @@ allprojects {
             downloadJavadoc = true
         }
     }
-
-    publishing {
-        repositories {
-            if (ENV.NANITE_TOKEN) {
-                maven {
-                    url "https://maven.nanite.dev/releases"
-                    credentials {
-                        username = "nanite"
-                        password = "${ENV.NANITE_TOKEN}"
-                    }
-                }
-            }
-        }
-    }
 }
 
 subprojects {
     base {
-        archivesName = "${archives_base_name}-$project.name"
+        archivesName = rootProject.archives_base_name + project.name
     }
 
     if (project.name != "common") {
@@ -104,6 +88,28 @@ subprojects {
 
         filesMatching(["META-INF/neoforge.mods.toml", "fabric.mod.json"]) {
             expand replaceProperties
+        }
+    }
+
+    publishing {
+        publications {
+            register("maven${project.name.capitalize()}", MavenPublication) {
+                artifactId = "${rootProject.archives_base_name}-${project.name}"
+                from components.java
+            }
+        }
+
+        repositories {
+            def token = providers.environmentVariable("NANITE_TOKEN");
+            if (token.isPresent()) {
+                maven {
+                    url "https://maven.nanite.dev/releases"
+                    credentials {
+                        username = "nanite"
+                        password = providers.environmentVariable("NANITE_TOKEN").get()
+                    }
+                }
+            }
         }
     }
 }

@@ -57,12 +57,3 @@ dependencies {
 java {
     withSourcesJar()
 }
-
-publishing {
-    publications {
-        mavenNeoForge(MavenPublication) {
-            artifactId = rootProject.base.archivesName.get()
-            from components.java
-        }
-    }
-}

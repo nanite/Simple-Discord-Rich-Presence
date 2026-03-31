@@ -9,11 +9,10 @@ jobs:
   build:
     if: |
       !contains(github.event.head_commit.message, '[ciskip]')
-    uses: nanite/workflows/.github/workflows/standard-modmuss.yml@v1.1
+    uses: nanite/workflows/.github/workflows/release.yml@v1.3
     with:
       java-version: 25
-      changelog-file: "./CHANGELOG.md"
-      release-to-github: false
+      gradle-tasks: build publish publishMods
     secrets:
       nanite-token: ${{ secrets.NANITE_DEPLOY }}
       curse-token: ${{ secrets.CURSE_DEPLOY }}

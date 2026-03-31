@@ -33,14 +33,3 @@ dependencies {
 java {
     withSourcesJar()
 }
-
-publishing {
-    publications {
-        mavenFabric(MavenPublication) {
-            groupId project.group
-            artifactId project.base.archivesName.get()
-            version project.version
-            from components.java
-        }
-    }
-}
