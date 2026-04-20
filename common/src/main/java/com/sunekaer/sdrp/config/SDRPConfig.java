@@ -3,9 +3,13 @@ package com.sunekaer.sdrp.config;
 import com.jagrosh.discordipc.entities.RichPresence;
 import com.sunekaer.sdrp.SDRP;
 import com.sunekaer.sdrp.discord.State;
-import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
+import de.marhali.json5.Json5Array;
+import de.marhali.json5.Json5Element;
+import de.marhali.json5.Json5Object;
+import dev.nanite.library.core.config.Config;
+import dev.nanite.library.core.config.values.BooleanConfigValue;
+import dev.nanite.library.core.config.values.ListConfigValue;
+import dev.nanite.library.core.config.values.LongConfigValue;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -14,147 +18,170 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Config(name = SDRP.MOD_ID + "-common")
-public class SDRPConfig implements ConfigData {
-    @Comment("Your Discord App ID")
-    public long clientId = 608012526537408579L;
+public interface SDRPConfig {
+    Config CONFIG = Config.clientConfig(SDRP.MOD_ID);
 
-    @Comment("If you wish to disable Discord Rich Presence, set this to false.")
-    public boolean enabled = true;
+    LongConfigValue clientId = CONFIG.longValue("clientId", 608012526537408579L)
+            .comments("Your Discord App ID");
 
-    @Comment("When enabled, the mod will log the current state being sent to Discord")
-    public boolean logState = false;
+    BooleanConfigValue enabled = CONFIG.booleanValue("enabled", true)
+            .comments("If you wish to disable Discord Rich Presence, set this to false.");
 
-    @Comment("""
-            Set custom buttons for the Discord Rich Presences. You can only have 2 buttons, each button has a label and a URL.
-            
-            Example:
-            [
-                {
-                    "label": "Join our Discord!",
-                    "url": "https://discord.gg/...
-                },
-                ...
-            ]
-            """)
-    public List<Button> buttons = new ArrayList<>();
+    BooleanConfigValue logState = CONFIG.booleanValue("logState", false)
+            .comments("When enabled, the mod will log the current state being sent to Discord");
 
-    @Comment("If set to false, it disables the build-in clientJoinEvent, which is used to tell when the player joins a world and changing Dimension.")
-    public boolean enableUpdateDimensionPresence = true;
+    ListConfigValue<Button> buttons = (ListConfigValue<Button>) CONFIG.listValue("buttons", new ArrayList<>(), Button::from, Button::to)
+            .comments(
+                    "Set custom buttons for the Discord Rich Presences. You can only have 2 buttons, each button has a label and a URL.",
+                    "",
+                    "Example:",
+                    "[",
+                    "    {",
+                    "        \"label\": \"Join our Discord!\",",
+                    "        \"url\": \"https://discord.gg/...\"",
+                    "    }",
+                    "    ...",
+                    "]"
+            );
 
-    @Comment("""
-            Dimensions can be setup to update the Rich Presence when the player is in them.
-            
-            Due to the complex nature of modded dimensions, we've added support for different matchers here with 
-            support for variable replacement in the various fields.
-            
-            Note: When comparing, the full dimension identifier is used (e.g. minecraft:overworld, modid:custom_dimension) meaning if you use 
-            a startsWith, regex, etc, you need to handle the namespace as well. 
-            
-            Helper matchers are provided for doing blanket matches on just the namespace or path.
-            
-            Supported matchers:
-            - exact@<string> : Exact match
-            - contains@<string> : Contains substring
-            - startsWith@<string> : Starts with substring
-            - endsWith@<string> : Ends with substring
-            - regex@<pattern> : Matches regex pattern (Java regex syntax)
-            - namespace@<string> : Matches namespace
-            - path@<string> : Matches path
-            
-            Variables:
-            - {{dimension.name}}: The translated dimension name (e.g. dimension.minecraft.overworld = Overworld). This is NeoForge standards, not all mods follow this, nor will all have their own lang keys added. 
-            - {{dimension.path}}: The dimension identifier (e.g. overworld) excluding the namespace
-            - {{dimension.namespace}}: The dimension namespace (e.g. minecraft, modid)
-            - {{dimension.identifier}}: The full dimension identifier (e.g. minecraft:overworld)
-            - {{player.uuid}}: The player's UUID
-            - {{player.name}}: The player's in-game name
-            - Please let us know if there are any other variables you'd like to see added!
-            """)
-    public List<DimensionEntry> dimensionsSupport = new ArrayList<>();
+    BooleanConfigValue enableUpdateDimensionPresence = CONFIG.booleanValue("enableUpdateDimensionPresence", true)
+            .comments("If set to false, it disables the build-in clientJoinEvent, which is used to tell when the player joins a world and changing Dimension.");
 
-    @Comment("If set to false, it disables the build-in screenEvent, which is used to tell when we are on the main menu, or other enabled screens.")
-    public boolean enableUpdateScreenPresence = true;
+    ListConfigValue<DimensionEntry> dimensionsSupport = (ListConfigValue<DimensionEntry>) CONFIG.listValue("dimensionsSupport", new ArrayList<>() {{
+                addAll(List.of(new DimensionEntry(
+                                "exact@minecraft:overworld",
+                                "{{dimension.name}}",
+                                "{{dimension.name}}",
+                                "{{dimension.path}}"
+                        ),
+                        new DimensionEntry(
+                                "exact@minecraft:the_nether",
+                                "{{dimension.name}}",
+                                "{{dimension.name}}",
+                                "{{dimension.path}}"
+                        ),
+                        new DimensionEntry(
+                                "exact@minecraft:the_end",
+                                "{{dimension.name}}",
+                                "{{dimension.name}}",
+                                "{{dimension.path}}"
+                        )
+                ));
+            }}, DimensionEntry::from, DimensionEntry::to)
+            .comments("""
+                    Dimensions can be setup to update the Rich Presence when the player is in them.
+                    
+                    Due to the complex nature of modded dimensions, we've added support for different matchers here with 
+                    support for variable replacement in the various fields.
+                    
+                    Note: When comparing, the full dimension identifier is used (e.g. minecraft:overworld, modid:custom_dimension) meaning if you use 
+                    a startsWith, regex, etc, you need to handle the namespace as well. 
+                    
+                    Helper matchers are provided for doing blanket matches on just the namespace or path.
+                    
+                    Supported matchers:
+                    - exact@<string> : Exact match
+                    - contains@<string> : Contains substring
+                    - startsWith@<string> : Starts with substring
+                    - endsWith@<string> : Ends with substring
+                    - regex@<pattern> : Matches regex pattern (Java regex syntax)
+                    - namespace@<string> : Matches namespace
+                    - path@<string> : Matches path
+                    
+                    Variables:
+                    - {{dimension.name}}: The translated dimension name (e.g. dimension.minecraft.overworld = Overworld). This is NeoForge standards, not all mods follow this, nor will all have their own lang keys added. 
+                    - {{dimension.path}}: The dimension identifier (e.g. overworld) excluding the namespace
+                    - {{dimension.namespace}}: The dimension namespace (e.g. minecraft, modid)
+                    - {{dimension.identifier}}: The full dimension identifier (e.g. minecraft:overworld)
+                    - {{player.uuid}}: The player's UUID
+                    - {{player.name}}: The player's in-game name
+                    - Please let us know if there are any other variables you'd like to see added!
+                    """);
 
-    @Comment("""
-            Screens can be setup to update the Rich Presence when the player is on them. You can specify multiple screen classes for each entry. 
-            Each screen should have a message, imageName and imageKey.
-            
-            Example:    
-            [
-                {
-                    "screenClass": [
-                        "net.minecraft.client.gui.screens.TitleScreen"
-                    ],
-                    "message": "sdrp.mainmenu",
-                    "imageName": "sdrp.mainmenu",
-                    "imageKey": "menu"
-                },
-                ...
-            ]
-            
-            This would update the Rich Presence when on the Title Screen to have the message and images specified.
-            """)
-    public List<ScreenTranslation> screens = new ArrayList<>();
+    BooleanConfigValue enableUpdateScreenPresence = CONFIG.booleanValue("enableUpdateScreenPresence", true)
+            .comments("If set to false, it disables the build-in screenEvent, which is used to tell when we are on the main menu, or other enabled screens.");
 
-    @Override
-    public void validatePostLoad() throws ValidationException {
-        if (this.screens.isEmpty()) {
-            this.screens.add(new ScreenTranslation(
-                    List.of(
-                            "net.minecraft.client.gui.screens.TitleScreen",
-                            "net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen",
-                            "net.minecraft.client.gui.screens.worldselection.SelectWorldScreen"
-                    ),
-                    "sdrp.mainmenu",
-                    "sdrp.mainmenu",
-                    "menu"
-            ));
+    ListConfigValue<ScreenTranslation> screens = (ListConfigValue<ScreenTranslation>) CONFIG.listValue("screens", new ArrayList<>() {{
+                add(new ScreenTranslation(
+                        List.of(
+                                "net.minecraft.client.gui.screens.TitleScreen",
+                                "net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen",
+                                "net.minecraft.client.gui.screens.worldselection.SelectWorldScreen"
+                        ),
+                        "sdrp.mainmenu",
+                        "sdrp.mainmenu",
+                        "menu"
+                ));
+            }}, ScreenTranslation::from, ScreenTranslation::to)
+            .comments("""
+                    Screens can be setup to update the Rich Presence when the player is on them. You can specify multiple screen classes for each entry. 
+                    Each screen should have a message, imageName and imageKey.
+                    
+                    Example:    
+                    [
+                        {
+                            "screenClass": [
+                                "net.minecraft.client.gui.screens.TitleScreen"
+                            ],
+                            "message": "sdrp.mainmenu",
+                            "imageName": "sdrp.mainmenu",
+                            "imageKey": "menu"
+                        },
+                        ...
+                    ]
+                    
+                    This would update the Rich Presence when on the Title Screen to have the message and images specified.
+                    """);
+
+    record Button(String label, String url) {
+        public static Button from(Json5Element elm) {
+            Json5Object obj = elm.getAsJson5Object();
+            return new Button(obj.get("label").getAsString(), obj.get("url").getAsString());
         }
 
-        if (this.dimensionsSupport.isEmpty()) {
-            this.dimensionsSupport.addAll(List.of(new DimensionEntry(
-                            "exact@minecraft:overworld",
-                            "{{dimension.name}}",
-                            "{{dimension.name}}",
-                            "{{dimension.path}}"
-                    ),
-                    new DimensionEntry(
-                            "exact@minecraft:the_nether",
-                            "{{dimension.name}}",
-                            "{{dimension.name}}",
-                            "{{dimension.path}}"
-                    ),
-                    new DimensionEntry(
-                            "exact@minecraft:the_end",
-                            "{{dimension.name}}",
-                            "{{dimension.name}}",
-                            "{{dimension.path}}"
-                    )
-            ));
+        public static Json5Element to(Button button) {
+            var json5Object = new Json5Object();
+            json5Object.addProperty("label", button.label());
+            json5Object.addProperty("url", button.url());
+            return json5Object;
         }
     }
 
-    public static final class Button {
-        public String label;
-        public String url;
-    }
-
-    public static final class ScreenTranslation extends State {
+    final class ScreenTranslation extends State {
         public List<String> screenClass;
-
-        public ScreenTranslation() {
-            super("", "", "");
-            this.screenClass = new ArrayList<>();
-        }
 
         public ScreenTranslation(List<String> screenClass, String message, String imageName, String imageKey) {
             super(message, imageName, imageKey);
             this.screenClass = screenClass;
         }
+
+        public static ScreenTranslation from(Json5Element elm) {
+            Json5Object obj = elm.getAsJson5Object();
+            return new ScreenTranslation(
+                    obj.get("screenClass").getAsJson5Array().asList()
+                            .stream()
+                            .map(Json5Element::getAsString)
+                            .toList(),
+                    obj.get("message").getAsString(),
+                    obj.get("imageName").getAsString(),
+                    obj.get("imageKey").getAsString()
+            );
+        }
+
+        public static Json5Element to(ScreenTranslation screenTranslation) {
+            var json5Object = new Json5Object();
+            var classesList = new Json5Array();
+            screenTranslation.screenClass.forEach(classesList::add);
+            json5Object.add("screenClass", classesList);
+
+            json5Object.addProperty("message", screenTranslation.message);
+            json5Object.addProperty("imageName", screenTranslation.imageName);
+            json5Object.addProperty("imageKey", screenTranslation.imageKey);
+            return json5Object;
+        }
     }
 
-    public static final class DimensionEntry {
+    final class DimensionEntry {
         public String matcher;
         public String message;
         public String imageName;
@@ -289,6 +316,27 @@ public class SDRPConfig implements ConfigData {
             return prefixWithIn;
         }
 
+        public static DimensionEntry from(Json5Element elm) {
+            Json5Object obj = elm.getAsJson5Object();
+            return new DimensionEntry(
+                    obj.get("matcher").getAsString(),
+                    obj.get("message").getAsString(),
+                    obj.get("imageName").getAsString(),
+                    obj.get("imageKey").getAsString(),
+                    obj.has("prefixWithIn") && obj.get("prefixWithIn").getAsBoolean()
+            );
+        }
+
+        public static Json5Element to(DimensionEntry entry) {
+            var json5Object = new Json5Object();
+            json5Object.addProperty("matcher", entry.matcher);
+            json5Object.addProperty("message", entry.message);
+            json5Object.addProperty("imageName", entry.imageName);
+            json5Object.addProperty("imageKey", entry.imageKey);
+            json5Object.addProperty("prefixWithIn", entry.prefixWithIn);
+            return json5Object;
+        }
+
         @Override
         public boolean equals(Object obj) {
             if (obj == this) return true;
@@ -315,6 +363,5 @@ public class SDRPConfig implements ConfigData {
                     "imageKey=" + imageKey + ", " +
                     "prefixWithIn=" + prefixWithIn + ']';
         }
-
     }
 }

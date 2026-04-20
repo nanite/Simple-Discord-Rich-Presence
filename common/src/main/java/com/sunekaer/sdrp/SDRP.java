@@ -2,9 +2,7 @@ package com.sunekaer.sdrp;
 
 import com.sunekaer.sdrp.config.SDRPConfig;
 import com.sunekaer.sdrp.discord.RPClient;
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.ConfigHolder;
-import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
+import dev.nanite.library.core.config.ConfigManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -19,12 +17,12 @@ public class SDRP {
     public static RPClient RP_CLIENT;
     public static final OffsetDateTime START_TIME = OffsetDateTime.now();
 
-    public static SDRPConfig config;
-
     public static void init() {
-        ConfigHolder<SDRPConfig> register = AutoConfig.register(SDRPConfig.class, JanksonConfigSerializer::new);
-        config = register.getConfig();
+        ConfigManager.register(SDRPConfig.CONFIG);
+    }
 
+
+    public static void setup() {
         RP_CLIENT = new RPClient();
     }
 
@@ -32,7 +30,7 @@ public class SDRP {
      * Called by platform event handlers when a screen is initialized.
      */
     public static void onScreenInit(Screen screen) {
-        if (!config.enabled || !config.enableUpdateScreenPresence) {
+        if (!SDRPConfig.enabled.get() || !SDRPConfig.enableUpdateScreenPresence.get()) {
             return;
         }
 
@@ -41,7 +39,7 @@ public class SDRP {
 
     private static void updateScreen(Screen screen) {
         var screenClassName = screen.getClass().getName();
-        var screenPresence = config.screens.stream()
+        var screenPresence = SDRPConfig.screens.get().stream()
                 .filter(e -> e.screenClass.contains(screenClassName))
                 .findFirst();
 
@@ -60,7 +58,7 @@ public class SDRP {
      * Called by platform event handlers when an entity is added to a level.
      */
     public static void onClientJoin(Entity entity, Level level) {
-        if (!config.enabled || !config.enableUpdateDimensionPresence) {
+        if (!SDRPConfig.enabled.get() || !SDRPConfig.enableUpdateDimensionPresence.get()) {
             return;
         }
 
@@ -77,7 +75,7 @@ public class SDRP {
     public static void setDimension(Level level, Player player) {
         var dimensionName = level.dimension().identifier().toString();
 
-        for (var entry : config.dimensionsSupport) {
+        for (var entry : SDRPConfig.dimensionsSupport.get()) {
             if (entry.matches(dimensionName)) {
                 var state = entry.createPresence(level.dimension().identifier(), player);
                 RP_CLIENT.setState(state);

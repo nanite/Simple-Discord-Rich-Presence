@@ -43,15 +43,8 @@ configurations {
 }
 
 dependencies {
-    implementation("me.shedaniel.cloth:cloth-config-neoforge:${rootProject.cloth_config_version}")
-
-    runtimeOnly "dev.nanite.forks:discord-ipc:${ipc_version}"
-    implementation "dev.nanite.forks:discord-ipc:${ipc_version}"
-
-    // This was painful.
-    // modCompileOnly("dev.latvian.mods:kubejs-neoforge:$kubejs_version") {
-    //     exclude group: "dev.latvian.apps", module: "tiny-java-server"
-    // }
+    api("dev.nanite.mods:nanite-library-neoforge:${nanite_library_version}")
+    jarJar(api("dev.nanite.forks:discord-ipc:${ipc_version}"))
 }
 
 java {

@@ -2,7 +2,10 @@ package com.sunekaer.sdrp.discord;
 
 import com.jagrosh.discordipc.entities.RichPresence;
 import com.sunekaer.sdrp.SDRP;
+import com.sunekaer.sdrp.config.SDRPConfig;
 import net.minecraft.client.resources.language.I18n;
+
+import java.util.List;
 
 public class State {
     public static final State LOADING_STATE = new State("Starting Minecraft", "Starting Minecraft", "loading");
@@ -24,13 +27,15 @@ public class State {
                 .setLargeImage("logo", I18n.get("sdrp.logo"))
                 .setSmallImage(imageKey, I18n.get(imageName));
 
-        if (!SDRP.config.buttons.isEmpty()) {
-            var buttonOne = SDRP.config.buttons.get(0);
-            presence.setButton1(buttonOne.label, buttonOne.url);
+        if (!SDRPConfig.buttons.get().isEmpty()) {
+            List<SDRPConfig.Button> buttons = SDRPConfig.buttons.get();
 
-            if (SDRP.config.buttons.size() > 1) {
-                var buttonTwo = SDRP.config.buttons.get(1);
-                presence.setButton2(buttonTwo.label, buttonTwo.url);
+            var buttonOne = buttons.getFirst();
+            presence.setButton1(buttonOne.label(), buttonOne.url());
+
+            if (buttons.size() > 1) {
+                var buttonTwo = buttons.get(1);
+                presence.setButton2(buttonTwo.label(), buttonTwo.url());
             }
         }
 

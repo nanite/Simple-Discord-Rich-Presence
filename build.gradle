@@ -3,42 +3,31 @@ plugins {
     id 'fabric-loom' version '1.15-SNAPSHOT' apply(false)
     id 'net.neoforged.moddev' version '2.0.141' apply(false)
     id "me.modmuss50.mod-publish-plugin" version "1.1.0"
+    id "dev.nanite.nanite-plugin" version "0.1.0-SNAPSHOT"
 }
 
-def ENV = System.getenv()
+nanite {
+    changelog {
+        file = file("./CHANGELOG.md")
+    }
+}
 
 allprojects {
     apply plugin: 'idea'
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
 
-    version = "${mod_version}-build.${ENV.GITHUB_RUN_NUMBER ?: 9999}+mc${minecraft_version}"
+    version = naniteUtils.createModVersion()
     group = maven_group
 
     repositories {
         mavenLocal()
         maven {
-            url = "https://jitpack.io"
-            content {
-                includeGroup "com.github.rtyley"
-                includeGroup "com.github.jagrosh"
-            }
-        }
-        maven {
-            url = "https://maven.latvian.dev/releases"
-            content {
-                includeGroup "dev.latvian.mods"
-                includeGroup "dev.latvian.apps"
-            }
-        }
-        maven {
             url "https://maven.nanite.dev/releases"
             content {
                 includeGroup "dev.nanite.forks"
+                includeGroup "dev.nanite.mods"
             }
-        }
-        maven {
-            url = "https://maven.shedaniel.me/"
         }
     }
 
@@ -57,7 +46,7 @@ allprojects {
 
 subprojects {
     base {
-        archivesName = rootProject.archives_base_name + project.name
+        archivesName = "${archives_base_name}-$project.name"
     }
 
     if (project.name != "common") {
@@ -73,13 +62,15 @@ subprojects {
     def replaceProperties = [
             mod_id: mod_id,
             minecraft_version: minecraft_version,
-            minecraft_version_range: minecraft_version_range,
+            minecraft_version_range_maven: minecraft_version_range_maven,
+            minecraft_version_range_semver: minecraft_version_range_semver,
             neoforge_version: neoforge_version,
             neoforge_version_range: neoforge_version_range,
             fabric_loader_version: fabric_loader_version,
             fabric_api_version: fabric_api_version,
-            cloth_config_version: cloth_config_version,
-            cloth_config_version_range: cloth_config_version_range,
+            fabric_api_version_range: fabric_api_version_range,
+            nanite_library_version_maven: nanite_library_version_maven,
+            nanite_library_version_semver: nanite_library_version_semver,
             version: version,
     ]
 
@@ -114,57 +105,59 @@ subprojects {
     }
 }
 
+tasks.named("publishMods") {
+    dependsOn tasks.named("createChangelog")
+}
+
 publishMods {
     dryRun = providers.environmentVariable("CURSE_TOKEN").getOrNull() == null
-    changelog = file("./CHANGELOG.md").text
-    version = "${mod_version}"
+    changelog = tasks.named("createChangelog").flatMap { it.outputFile }.map { it.asFile.text }
+    version = project.version
     type = STABLE
 
-    def fabricOptions = publishOptions {
-        file = project.provider { project(":fabric").tasks.jar }.flatMap { it.archiveFile }
-        displayName = "[FABRIC][${minecraft_version}] ${project.name} ${mod_version}"
-        modLoaders.add("fabric")
-    }
-
-    def neoforgeOptions = publishOptions {
-        file = project.provider { project(":neoforge").tasks.jar }.flatMap { it.archiveFile }
-        displayName = "[NEOFORGE][${minecraft_version}] ${project.name} ${mod_version}"
-        modLoaders.add("neoforge")
-    }
+    def createOptions = { String modLoader -> publishOptions {
+        file = project.provider { project(":${modLoader}").tasks.jar }.flatMap { it.archiveFile }
+        displayName = "SimpleDiscordRichPresense ${modLoader.capitalize()} ${project.version}"
+        modLoaders.add(modLoader)
+    }}
 
     def curseForgeOptions = curseforgeOptions {
         accessToken = providers.environmentVariable("CURSE_TOKEN")
         projectId = "${curseforge_id}"
-        minecraftVersions.add("${minecraft_version}")
+        supported_minecraft_versions.split(",").each {
+            minecraftVersions.add(it.trim())
+        }
     }
 
     def modrinthOptions = modrinthOptions {
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
         projectId = "${modrinth_id}"
-        minecraftVersions.add("${minecraft_version}")
+        supported_minecraft_versions.split(",").each {
+            minecraftVersions.add(it.trim())
+        }
     }
 
     curseforge("curseforgeFabric") {
-        from(curseForgeOptions, fabricOptions)
+        from(curseForgeOptions, createOptions("fabric"))
         requires("fabric-api")
-        requires("cloth-config")
+        requires("nanite-library")
     }
 
     curseforge("curseforgeNeoforge") {
-        from(curseForgeOptions, neoforgeOptions)
-        requires("cloth-config")
+        from(curseForgeOptions, createOptions("neoforge"))
+        requires("nanite-library")
     }
 
     if (providers.environmentVariable("MODRINTH_TOKEN").getOrNull() != null) {
         modrinth("modrinthFabric") {
             from(modrinthOptions, fabricOptions)
             requires("fabric-api")
-            requires("cloth-config")
+            requires("nanite-library")
         }
 
         modrinth("modrinthNeoforge") {
             from(modrinthOptions, neoforgeOptions)
-            requires("cloth-config")
+            requires("nanite-library")
         }
     }
 }

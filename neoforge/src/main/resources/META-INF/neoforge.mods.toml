@@ -25,13 +25,13 @@ side = "BOTH"
 [[dependencies.sdrp]]
 modId = "minecraft"
 type = "required"
-versionRange = "${minecraft_version_range}"
+versionRange = "${minecraft_version_range_maven}"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.sdrp]]
-modId = "cloth_config"
+modId = "nanitelibrary"
 type = "required"
-versionRange = "${cloth_config_version_range}"
+versionRange = "${nanite_library_version_maven}"
 ordering = "NONE"
 side = "BOTH"

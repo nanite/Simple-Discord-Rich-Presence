@@ -15,8 +15,7 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
     compileOnly("dev.nanite.forks:discord-ipc:${ipc_version}")
-
-    compileOnly("me.shedaniel.cloth:cloth-config:${project.cloth_config_version}")
+    api("dev.nanite.mods:nanite-library-common:${nanite_library_version}")
 
     // Unit testing
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'

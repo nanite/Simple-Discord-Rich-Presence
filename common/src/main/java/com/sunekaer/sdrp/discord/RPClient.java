@@ -7,6 +7,7 @@ import com.jagrosh.discordipc.entities.RichPresence;
 import com.jagrosh.discordipc.entities.pipe.PipeStatus;
 import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
 import com.sunekaer.sdrp.SDRP;
+import com.sunekaer.sdrp.config.SDRPConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,7 @@ public class RPClient {
     public final ArrayBlockingQueue<RichPresence> stateUpdateQueue = new ArrayBlockingQueue<>(24);
 
     public RPClient() {
-        if (!SDRP.config.enabled) {
+        if (!SDRPConfig.enabled.get()) {
             LOGGER.info("Preventing Simple Discord Rich Presence from starting as it's disabled");
             return;
         }
@@ -58,7 +59,9 @@ public class RPClient {
             return;
         }
 
-        this.client = new IPCClient(SDRP.config.clientId);
+        System.out.println("CLIENT ID:::::::");
+        System.out.println(SDRPConfig.clientId.get());
+        this.client = new IPCClient(SDRPConfig.clientId.get());
         this.client.setListener(new IPCListener() {
             public void onReady(IPCClient client) {
                 LOGGER.info("Discord client ready");
@@ -93,12 +96,12 @@ public class RPClient {
         }
 
         this.client.sendRichPresence(state, new Callback((s) -> {}, (e) -> {
-            if (SDRP.config.logState) {
+            if (SDRPConfig.logState.get()) {
                 LOGGER.error("Failed to send state to discord: {}\n {}", state.toJson().toString(), e);
             }
         }));
 
-        if (SDRP.config.logState) {
+        if (SDRPConfig.logState.get()) {
             LOGGER.info("Sent state to discord: {}", state.toJson().toString());
         }
     }
@@ -124,7 +127,7 @@ public class RPClient {
      */
     public void setState(RichPresence context) {
         // Don't work if it's disabled
-        if (!SDRP.config.enabled) {
+        if (!SDRPConfig.enabled.get()) {
             return;
         }
 
