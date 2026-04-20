@@ -150,13 +150,13 @@ publishMods {
 
     if (providers.environmentVariable("MODRINTH_TOKEN").getOrNull() != null) {
         modrinth("modrinthFabric") {
-            from(modrinthOptions, fabricOptions)
+            from(modrinthOptions, createOptions("fabric"))
             requires("fabric-api")
             requires("nanite-library")
         }
 
         modrinth("modrinthNeoforge") {
-            from(modrinthOptions, neoforgeOptions)
+            from(modrinthOptions, createOptions("neoforge"))
             requires("nanite-library")
         }
     }
