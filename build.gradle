@@ -1,8 +1,8 @@
 plugins {
     id 'java-library'
-    id 'fabric-loom' version '1.15-SNAPSHOT' apply(false)
-    id 'net.neoforged.moddev' version '2.0.141' apply(false)
-    id "me.modmuss50.mod-publish-plugin" version "1.1.0"
+    id 'fabric-loom' version '1.17-SNAPSHOT' apply(false)
+    id 'net.neoforged.moddev' version '2.0.147' apply(false)
+    id "me.modmuss50.mod-publish-plugin" version "2.2.0"
     id "dev.nanite.nanite-plugin" version "0.1.0-SNAPSHOT"
 }
 
@@ -127,6 +127,9 @@ publishMods {
         supported_minecraft_versions.split(",").each {
             minecraftVersions.add(it.trim())
         }
+        javaVersions.add(JavaVersion.VERSION_25)
+        client = true
+        server = true
     }
 
     def modrinthOptions = modrinthOptions {
@@ -135,6 +138,7 @@ publishMods {
         supported_minecraft_versions.split(",").each {
             minecraftVersions.add(it.trim())
         }
+        environment = CLIENT_AND_SERVER
     }
 
     curseforge("curseforgeFabric") {

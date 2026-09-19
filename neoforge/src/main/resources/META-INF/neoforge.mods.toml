@@ -9,7 +9,7 @@ displayTest="IGNORE_ALL_VERSION"
 version="${version}"
 displayName="Simple Discord Rich Presence"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/simple-discord-rich-presence"
-logoFile="logo.png"
+iconFile="logo.png"
 authors="Sunekaer"
 description='''
 Simple Discord Rich Presence
